@@ -1,0 +1,34 @@
+{
+  "name": "rockpaperscissorsapp",
+  "version": "1.0.0",
+  "description": "Aplikasi web yang memungkinkan pengguna menebak gambar batu, kertas, atau gunting menggunakan model machine learning yang dijalankan di browser dengan TensorFlow.js.",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "start-dev": "webpack serve --config webpack.dev.js",
+    "serve": "http-server dist",
+    "prettier": "prettier . --check",
+    "prettier:write": "prettier . --write"
+  },
+  "keywords": [],
+  "author": "YOUR_NAME <yourmail@mail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-env": "^7.28.5",
+    "babel-loader": "^10.0.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.4",
+    "http-server": "^14.1.1",
+    "mini-css-extract-plugin": "^2.9.4",
+    "prettier": "^3.7.4",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2",
+    "webpack-merge": "^6.0.1"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0"
+  }
+}
