@@ -64,6 +64,7 @@ class App {
 
   async afterRender() {
     this.#uiElements = {
+      // TODO: Tambahkan element prediction dan cofidence ke dalam uiElements
       video: document.getElementById('webcam'),
       canvas: document.getElementById('outputCanvas'),
       cameraSelect: document.getElementById('cameraSelect'),
