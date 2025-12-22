@@ -21,7 +21,6 @@ class App {
         <section class="video-card">
           <div class="viewport-container">
             <div class="placeholder">
-              <div class="loader"></div>
               <p>Camera Off</p>
             </div>
             <video id="webcam"></video>
@@ -74,17 +73,10 @@ class App {
       fpsSlider: document.getElementById('fpsSlider'),
       fpsValue: document.getElementById('fpsValue'),
       toggleCamBtn: document.getElementById('toggleCamBtn'),
-      placeholder: document.querySelector('.placeholder'),
       placeholderText: document.querySelector('.placeholder p'),
-      loader: document.querySelector('.loader'),
     };
 
     this.#uiElements.ctx = this.#uiElements.canvas.getContext('2d');
-
-    this.#uiElements.video.addEventListener('loadedmetadata', () => {
-      this.#uiElements.canvas.width = this.#uiElements.video.videoWidth;
-      this.#uiElements.canvas.height = this.#uiElements.video.videoHeight;
-    });
 
     this.#uiElements.fpsSlider.addEventListener('input', (e) => {
       this.#uiElements.fpsValue.textContent = e.target.value;
@@ -112,27 +104,8 @@ class App {
     });
   }
 
-  populateCameraSelect(videoDevices) {
-    this.#uiElements.cameraSelect.innerHTML = '';
-
-    if (videoDevices.length === 0) {
-      const option = document.createElement('option');
-      option.innerText = 'No cameras found';
-      this.#uiElements.cameraSelect.appendChild(option);
-      return;
-    }
-
-    videoDevices.forEach((device, index) => {
-      const option = document.createElement('option');
-      option.value = device.deviceId;
-      option.innerText = device.label || `Camera ${index + 1}`;
-      this.#uiElements.cameraSelect.appendChild(option);
-    });
-  }
-
   showError(message) {
     this.#uiElements.placeholderText.innerText = message;
-    this.#uiElements.loader.style.display = 'none';
   }
 }
 

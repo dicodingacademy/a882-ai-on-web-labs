@@ -1,45 +1,66 @@
 import * as tf from '@tensorflow/tfjs';
 
 export default class Camera {
-  #model;
-  #labels;
-  #imageSize;
-  #prediction;
-  #confidence;
-  #isDetecting = false;
   #video;
   #canvas;
   #ctx;
   #cameraSelect;
   #fpsSlider;
-  #placeholder;
-  #placeholderText;
-  #loader;
+  #model;
+  #labels;
+  #imageSize;
+  #prediction;
+  #confidence;
   #animationFrameId = null;
   #videoResolution = { width: 1280, height: 720 };
+  #videoDevices = [];
 
   constructor(appUI) {
-    this.#model = appUI.model;
-    this.#labels = appUI.labels;
-    this.#imageSize = appUI.imageSize;
-    this.#prediction = appUI.prediction;
-    this.#confidence = appUI.confidence;
     this.#video = appUI.video;
     this.#canvas = appUI.canvas;
     this.#ctx = appUI.ctx;
     this.#cameraSelect = appUI.cameraSelect;
     this.#fpsSlider = appUI.fpsSlider;
-    this.#placeholder = appUI.placeholder;
-    this.#placeholderText = appUI.placeholderText;
-    this.#loader = appUI.loader;
+    this.#model = appUI.model;
+    this.#labels = appUI.labels;
+    this.#imageSize = appUI.imageSize;
+    this.#prediction = appUI.prediction;
+    this.#confidence = appUI.confidence;
+  }
+
+  async init() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      throw new Error('Kamera tidak tersedia di browser ini.');
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    this.#videoDevices = devices.filter((device) => device.kind === 'videoinput');
+
+    this.#populateCameraSelect(this.#videoDevices);
+
+    stream.getTracks().forEach((track) => track.stop());
+  }
+
+  #populateCameraSelect(videoDevices) {
+    this.#cameraSelect.innerHTML = '';
+
+    if (videoDevices.length === 0) {
+      const option = document.createElement('option');
+      option.innerText = 'No cameras found';
+      this.#cameraSelect.appendChild(option);
+      return;
+    }
+
+    videoDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.innerText = device.label || `Camera ${index + 1}`;
+      this.#cameraSelect.appendChild(option);
+    });
   }
 
   async start() {
-    this.#placeholderText.style.display = 'none';
-    this.#loader.style.display = 'block';
-    this.#placeholder.style.display = 'flex';
-    this.#canvas.style.display = 'none';
-
     const deviceId = this.#cameraSelect.value;
     const fps = parseInt(this.#fpsSlider.value, 10);
 
@@ -62,51 +83,38 @@ export default class Camera {
       this.#video.srcObject = stream;
       await this.#video.play();
 
-      this.#placeholder.style.display = 'none';
-      this.#canvas.style.display = 'block';
+      this.#canvas.width = this.#video.videoWidth;
+      this.#canvas.height = this.#video.videoHeight;
 
       this.#animationFrameId = requestAnimationFrame(() => this.#processFrame());
     } catch (err) {
       console.error('Failed to start video stream:', err);
-      this.#placeholder.style.display = 'flex';
-      this.#loader.style.display = 'none';
-      this.#placeholderText.style.display = 'block';
-      this.#canvas.style.display = 'none';
     }
   }
 
   stop() {
-    if (this.#animationFrameId) {
+
+     if (this.#animationFrameId) {
       cancelAnimationFrame(this.#animationFrameId);
       this.#animationFrameId = null;
     }
+
     if (this.#video.srcObject) {
       this.#video.srcObject.getTracks().forEach((track) => track.stop());
       this.#video.srcObject = null;
     }
 
     this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
-    this.#placeholder.style.display = 'flex';
-    this.#loader.style.display = 'none';
-    this.#placeholderText.style.display = 'block';
-    this.#canvas.style.display = 'none';
   }
 
   #processFrame() {
     this.#animationFrameId = requestAnimationFrame(() => this.#processFrame());
 
     this.#ctx.save();
-    this.#ctx.scale(-1, 1);
-    this.#ctx.translate(-this.#canvas.width, 0);
     this.#ctx.drawImage(this.#video, 0, 0, this.#canvas.width, this.#canvas.height);
     this.#ctx.restore();
 
-    if (!this.#isDetecting) {
-      this.#isDetecting = true;
-      this.#detect().then(() => {
-        this.#isDetecting = false;
-      });
-    }
+    this.#detect()
   }
 
   async #detect() {
