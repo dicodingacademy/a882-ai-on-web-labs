@@ -12,11 +12,11 @@ export default class AppPresenter {
 
   async start() {
     try {
-      // TODO: Panggil loadModel dari AppModel dan simpan hasilnya ke dalam context
-      this.#initializeCamera();
-      this.#view.populateCameraSelect();
+      this.#camera = this.#initializeCamera();
+      await this.#camera.init();
+      this.#view.bindCameraEvents(this.#camera);
     } catch (error) {
-      // TODO: Tangani error dan tampilkan pesan error di UI
+      this.#view.showError(error.message);
       console.error(error);
     }
   }
@@ -24,9 +24,6 @@ export default class AppPresenter {
   #initializeCamera() {
     const context = this.#appUI;
 
-    // TODO: Tambahkan model, label, dan imageSize ke dalam context setelah dipanggil pada method start()
-
-    this.#camera = new Camera(context);
-    this.#view.bindCameraEvents(this.#camera);
+    return new Camera(context);
   }
 }

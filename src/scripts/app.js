@@ -100,31 +100,6 @@ class App {
     });
   }
 
-  async populateCameraSelect() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-      return;
-    }
-
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-
-    this.#uiElements.cameraSelect.innerHTML = '';
-
-    if (videoDevices.length === 0) {
-      const option = document.createElement('option');
-      option.innerText = 'No cameras found';
-      this.#uiElements.cameraSelect.appendChild(option);
-      return;
-    }
-
-    videoDevices.forEach((device, index) => {
-      const option = document.createElement('option');
-      option.value = device.deviceId;
-      option.innerText = device.label || `Camera ${index + 1}`;
-      this.#uiElements.cameraSelect.appendChild(option);
-    });
-  }
-
   showError(message) {
     // TODO: Tampilkan pesan error pada elemen placeholderText
   }

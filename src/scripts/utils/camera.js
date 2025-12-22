@@ -5,6 +5,7 @@ export default class Camera {
   #cameraSelect;
   #fpsSlider;
   #videoResolution = { width: 1280, height: 720 };
+  #videoDevices = [];
 
   constructor(appUI) {
     this.#video = appUI.video;
@@ -12,6 +13,38 @@ export default class Camera {
     this.#ctx = appUI.ctx;
     this.#cameraSelect = appUI.cameraSelect;
     this.#fpsSlider = appUI.fpsSlider;
+  }
+
+  async init() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      throw new Error('Kamera tidak tersedia di browser ini.');
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    this.#videoDevices = devices.filter((device) => device.kind === 'videoinput');
+
+    this.#populateCameraSelect(this.#videoDevices);
+
+    stream.getTracks().forEach((track) => track.stop());
+  }
+
+  #populateCameraSelect(videoDevices) {
+    this.#cameraSelect.innerHTML = '';
+
+    if (videoDevices.length === 0) {
+      const option = document.createElement('option');
+      option.innerText = 'No cameras found';
+      this.#cameraSelect.appendChild(option);
+      return;
+    }
+
+    videoDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.innerText = device.label || `Camera ${index + 1}`;
+      this.#cameraSelect.appendChild(option);
+    });
   }
 
   async start() {
