@@ -67,10 +67,32 @@ class PoemGenerator {
             return;
         }
 
-        // TODO 2: Panggil fungsi generatePoem dan kirimkan tema dari input
+        await this.generatePoem(theme);
     }
 
-    // TODO 2: Logika Generasi Puisi dengan Model AI
+    async generatePoem(theme) {
+        try {
+            const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
+
+            const result = await this.generator(prompt, {
+                max_new_tokens: 150,    // Panjang maksimal puisi
+                temperature: 0.8,       // Tingkat kreativitas (0.0-1.0)
+                do_sample: true,        // Aktifkan sampling probabilistik
+                top_p: 0.9             // Nucleus sampling untuk variasi
+            });
+
+            // Mengambil teks dari hasil generasi
+            const poem = result[0].generated_text;
+
+            // Menampilkan hasil ke layar
+            this.showResult(poem);
+
+        } catch (error) {
+            console.log('error')
+        } finally {
+            console.log('selesai')
+        }
+    }
 
     // TODO 3: Logika Copy to Clipboard
 
@@ -84,7 +106,10 @@ class PoemGenerator {
         this.loadingSection.style.display = 'none';
     }
 
-    // TODO 2:  Fungsi Tampilkan Hasil Puisi
+    showResult(poem) {
+        this.poemOutput.textContent = poem;
+        this.resultSection.style.display = 'block';
+    }
 
     hideResult() {
         this.resultSection.style.display = 'none';
