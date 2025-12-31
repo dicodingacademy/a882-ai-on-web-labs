@@ -4,13 +4,13 @@ class PoemGenerator {
         this.generator = null;
         this.isModelLoaded = false;
         this.isGenerating = false;
-        
+
         // Inisialisasi komponen aplikasi
         this.initializeElements();
         this.bindEvents();
-        // TODO 1: Inisialisasi model AI di sini
+        this.loadModel();
     }
-    
+
     initializeElements() {
         // Mengambil referensi semua elemen DOM yang diperlukan
         this.form = document.getElementById('poem-form');
@@ -22,73 +22,89 @@ class PoemGenerator {
         this.poemOutput = document.getElementById('poem-output');
         // TODO 3: Inisialisasi elemen tombol salin dan umpan balik salin
     }
-    
+
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         // TODO 3: Tambahkan event listener untuk tombol salin
     }
-    
+
     async loadModel() {
         try {
-            // TODO 1: Logika Memuat Model AI
+            // Menampilkan pesan loading dan menonaktifkan input sementara
+            this.showLoading('Memuat model AI...');
+            this.disableInput();
+
+            // Mengimpor library secara dinamis
+            const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+
+            // Inisialisasi model
+            this.generator = await pipeline(
+                'text2text-generation',
+                'Xenova/LaMini-Flan-T5-77M'
+            );
+
+            // Menandai bahwa model telah siap digunakan
+            this.isModelLoaded = true;
+            this.hideLoading();
+            this.enableInput(); // Mengaktifkan kembali input setelah model siap
         } catch (error) {
             this.showError('Gagal memuat model AI. Pastikan menggunakan server lokal (bukan file://) dan koneksi internet stabil.');
         }
     }
-    
+
     async handleSubmit(e) {
         e.preventDefault();
-        
+
         // Validasi state aplikasi sebelum memproses
         if (!this.isModelLoaded || this.isGenerating) {
             return;
         }
-        
+
         // Validasi input pengguna
         const theme = this.themeInput.value.trim();
         if (!theme) {
             this.showError('Silakan masukkan tema puisi.');
             return;
         }
-        
+
         // TODO 2: Panggil fungsi generatePoem dan kirimkan tema dari input
     }
-    
+
     // TODO 2: Logika Generasi Puisi dengan Model AI
-    
+
     // TODO 3: Logika Copy to Clipboard
-    
+
     showLoading(message) {
         this.loadingText.textContent = message;
         this.loadingSection.style.display = 'block';
         this.loadingSection.style.visibility = 'visible';
     }
-    
+
     hideLoading() {
         this.loadingSection.style.display = 'none';
     }
-    
+
     // TODO 2:  Fungsi Tampilkan Hasil Puisi
-    
+
     hideResult() {
         this.resultSection.style.display = 'none';
     }
-    
+
     disableInput() {
         this.themeInput.disabled = true;
         this.generateBtn.disabled = true;
     }
-    
+
     enableInput() {
         this.themeInput.disabled = false;
         this.generateBtn.disabled = false;
     }
-    
+
     showError(message) {
         this.hideLoading();
-        alert(message); 
+        alert(message);
     }
-    
+
     // TODO 3: COPY FEEDBACK dengan animasi visual
 }
 
