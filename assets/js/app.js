@@ -20,12 +20,13 @@ class PoemGenerator {
         this.loadingText = document.getElementById('loading-text');
         this.resultSection = document.getElementById('result-section');
         this.poemOutput = document.getElementById('poem-output');
-        // TODO 3: Inisialisasi elemen tombol salin dan umpan balik salin
+        this.copyBtn = document.getElementById('copy-btn');
+        this.copyFeedback = document.getElementById('copy-feedback');
     }
 
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        // TODO 3: Tambahkan event listener untuk tombol salin
+        this.copyBtn.addEventListener('click', () => this.copyToClipboard());
     }
 
     async loadModel() {
@@ -72,6 +73,13 @@ class PoemGenerator {
 
     async generatePoem(theme) {
         try {
+            this.isGenerating = true;
+            this.showLoading('Menghasilkan puisi...');
+            this.disableInput();
+            this.hideResult();
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
 
             const result = await this.generator(prompt, {
@@ -85,16 +93,29 @@ class PoemGenerator {
             const poem = result[0].generated_text;
 
             // Menampilkan hasil ke layar
+            this.hideLoading();
             this.showResult(poem);
+            this.enableInput();
 
         } catch (error) {
-            console.log('error')
+            console.error('Error generating poem:', error);
+            this.hideLoading();
+            this.showError('Gagal menghasilkan puisi. Silakan coba lagi.');
+            this.enableInput();
         } finally {
-            console.log('selesai')
+            this.isGenerating = false;
         }
     }
 
-    // TODO 3: Logika Copy to Clipboard
+    async copyToClipboard() {
+        try {
+            const text = this.poemOutput.textContent;
+            await navigator.clipboard.writeText(text);
+            this.showCopyFeedback('Puisi berhasil disalin!', 'success');
+        } catch (error) {
+            this.showCopyFeedback('Gagal menyalin puisi.', 'error');
+        }
+    }
 
     showLoading(message) {
         this.loadingText.textContent = message;
@@ -109,6 +130,11 @@ class PoemGenerator {
     showResult(poem) {
         this.poemOutput.textContent = poem;
         this.resultSection.style.display = 'block';
+        
+        this.resultSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
     }
 
     hideResult() {
@@ -130,7 +156,15 @@ class PoemGenerator {
         alert(message);
     }
 
-    // TODO 3: COPY FEEDBACK dengan animasi visual
+    showCopyFeedback(message, type) {
+        this.copyFeedback.textContent = message;
+        this.copyFeedback.className = `copy-feedback show ${type}`;
+
+        // Auto-hide feedback setelah 3 detik
+        setTimeout(() => {
+            this.copyFeedback.classList.remove('show');
+        }, 3000);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
