@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generator Puisi AI menggunakan kecerdasan buatan untuk membuat puisi berbahasa Inggris berdasarkan tema yang Anda berikan">
+    <title>Generator Puisi AI</title>
+    <link rel="icon" type="image/png" href="./assets/images/favicon.ico">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>Generator Puisi AI</h1>
+            <p>Masukkan tema untuk menghasilkan puisi berbahasa Inggris</p>
+        </header>
+        
+        <section class="input-section">
+            <form id="poem-form">
+                <label for="theme-input">Tema Puisi:</label>
+                <input 
+                    type="text" 
+                    id="theme-input" 
+                    placeholder="Contoh: life, love, cat..." 
+                    required
+                    aria-describedby="theme-help"
+                >
+                <small id="theme-help">Masukkan tema dalam bahasa Inggris</small>
+                <button type="submit" id="generate-btn">Buat Puisi</button>
+            </form>
+        </section>
+        
+        <section class="loading-section" id="loading-section">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p id="loading-text" role="status" aria-live="polite">Memuat model AI...</p>
+        </section>
+        
+        <section class="result-section" id="result-section" style="display: none;">
+            <h2>Puisi Anda:</h2>
+            <div class="poem-output" id="poem-output" role="region" aria-label="Hasil puisi yang dihasilkan"></div>
+            <button id="copy-btn" class="copy-button" aria-describedby="copy-help">
+                Salin ke Clipboard
+            </button>
+            <small id="copy-help">Klik untuk menyalin puisi ke clipboard</small>
+            <div id="copy-feedback" class="copy-feedback" role="status" aria-live="polite"></div>
+        </section>
+    </main>
+    
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>
