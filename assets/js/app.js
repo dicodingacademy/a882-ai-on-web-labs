@@ -1,3 +1,5 @@
+import CameraIntegration from "./camera.js";
+
 class App {
     constructor() {
         this.camera = null;
@@ -24,6 +26,7 @@ class App {
     async init() {
         try {
             // TODO 1: Panggil konstruktor CameraIntegration
+            this.camera = new CameraIntegration();
             // TODO 2: Panggil konstruktor ObjectDetector & load model
         } catch (error) {
             console.error('Error initializing app:', error);
