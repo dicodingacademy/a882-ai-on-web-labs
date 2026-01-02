@@ -29,6 +29,7 @@ class CameraIntegration {
             // TODO 1.2: Nonaktifkan tombol start jika tidak ada kamera 
         } catch (error) {
             // TODO 1.2: Nonaktifkan tombol start jika akses kamera ditolak
+            this.startBtn.disabled = true;
         }
     }
 
@@ -36,25 +37,25 @@ class CameraIntegration {
         // TODO 1: Cek apakah perangkat adalah mobile
         
         try {
-            // TODO 1.2: Perbarui UI saat memulai kamera
+            this.startBtn.disabled = true;
+            this.startBtn.textContent = 'Starting...';
             
             // TODO 1: Pengaturan constraints kamera
             this.stream = null;
             
             this.video.srcObject = this.stream;
-            // TODO 1.2: Perbarui UI setelah kamera dimulai
             this.updateUI();
         } catch (error) {
             alert(error.name === 'NotAllowedError' 
                 ? 'Camera permission denied. Please allow camera access.' 
                 : 'Failed to start camera.');
-            // TODO 1.2: Perbarui UI setelah kamera dimulai
+            this.updateUI();
         }
     }
 
     stopCamera() {
         // TODO 1: Hentikan semua track pada stream kamera
-        // TODO 1.2: Perbarui UI setelah kamera dimulai
+        this.updateUI();
     }
 
     updateUI() {
