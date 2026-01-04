@@ -20,7 +20,7 @@ Starter Project RockPaperScissors adalah aplikasi web yang mampu membedakan gamb
 ### Alternatif Server Lain
 ```bash
 # Node.js live-server
-npx live-server
+npx live-server .
 ```
 ## Struktur Project
 
@@ -32,7 +32,8 @@ npx live-server
 │   │   └── favicon.png        # Gambar favicon
 │   └── js/
 │       ├── camera.js          # Manajemen kamera
-│       └── script.js          # Aplikasi utama
+│       ├── script.js          # Aplikasi utama
+│       └── detection.js       # Logika deteksi gambar
 ├── src/                       # Referensi implementasi
 ├── index.html                 # Halaman utama
 └── README.md                  # Dokumentasi

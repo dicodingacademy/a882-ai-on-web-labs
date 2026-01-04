@@ -5,52 +5,75 @@ class App {
         this.camera = null;
         this.detector = null;
         this.isRunning = false;
-        
+
         this.initializeElements();
         this.bindEvents();
         this.init();
     }
-    
-    initializeElements() {
-        // TODO 2: Inisialisasi elemen untuk menampilkan status model
-        
-        // TODO 1: Inisialisasi elemen video dan canvas
-        
-        // TODO 2: Inisialisasi elemen untuk menampilkan hasil prediksi
-    }
-    
-    bindEvents() {
-        // TODO 2: Bind event listener untuk memulai prediksi saat video siap
-    }
-    
+
+    /**
+     * TODO:
+     * Inisialisasi elemen:
+     * [] Status Model
+     * [] Video & Canvas
+     * [] Hasil Prediksi
+    */
+    initializeElements() { }
+
+    bindEvents() { } // TODO: [] Bind event listener untuk memulai prediksi saat video siap
+
+    /**
+     * TODO:
+     * [*] Panggil konstruktor CameraIntegration
+     * [] Panggil konstruktor ObjectDetector
+     * [] Load model
+    */
     async init() {
         try {
-            // TODO 1: Panggil konstruktor CameraIntegration
             this.camera = new CameraIntegration();
-            // TODO 2: Panggil konstruktor ObjectDetector & load model
         } catch (error) {
             console.error('Error initializing app:', error);
         }
     }
+
+    /**
+     * TODO:
+     * [] Implementasi metode untuk memulai dan menghentikan prediksi
+     * [] Implementasi metode prediksi
+    */
+    startPrediction() {}
     
-    // TODO 2: Implementasi metode untuk memulai dan menghentikan prediksi
-    
-    // TODO 2: Implementasi metode prediksi
-    
-    // TODO 2: Implementasi metode untuk memperbarui tampilan hasil prediksi
-    
-    // TODO 2: Implementasi metode untuk mereset tampilan hasil prediksi
-    
-    // TODO 2: Implementasi metode untuk menampilkan status model
-    
-    destroy() {
-        // TODO 1: Menghentikan kamera
-        // TODO 2: Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
+    stopPrediction() {}
+
+    async predict() {}
+
+    updateDisplay(result) {
+        this.predictionLabel.textContent = result.className || 'Unknown';
+        this.predictionConfidence.textContent = `${result.confidence || 0}%`;
     }
+    
+    resetDisplay() {
+        this.predictionLabel.textContent = '-';
+        this.predictionConfidence.textContent = '0%';
+    }
+    
+    showStatus(message, status) {
+        this.modelStatus.textContent = message;
+        this.modelStatus.className = `status ${status}`;
+    }
+
+    /**
+     * TODO:
+     * [] Menghentikan kamera
+     * [] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
+    */
+    destroy() { }
 }
 
+/**
+ * TODO:
+ * [] Pastikan sumber daya dibersihkan saat jendela ditutup
+*/
 document.addEventListener('DOMContentLoaded', () => {
     const app = new App();
-    // TODO 3: Pastikan sumber daya dibersihkan saat jendela ditutup
-    // window.addEventListener('beforeunload', () => app.destroy());
 });
