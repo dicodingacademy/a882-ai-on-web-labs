@@ -8,39 +8,47 @@ class CameraIntegration {
         this.init();
     }
 
-    initializeElements() {
-        // TODO 1: Inisialisasi elemen video, pemilih kamera, dan kontrol lainnya
-        // TODO 1.1: Inisialisasi elemen untuk pengaturan frame rate
-    }
+    /**
+     * TODO:
+     * Inisialisasi elemen:
+     * [] Video
+     * [] Select Camera
+     * [] Start & Stop Button 
+    */
+    initializeElements() {}
 
-    bindEvents() {
-        // TODO 1: Bind event listeners untuk tombol start, stop, dan perubahan pengaturan kamera
-        // TODO 1.1: Bind event listener untuk perubahan frame rate
-    }
+    /**
+     * TODO:
+     * Daftarkan event listener untuk elemen:
+     * [] Start & Stop Button 
+     * [] Pilih kamera
+     * [] Pilih FPS 
+    */
+    bindEvents() {}
 
-    async init() {
-        // TODO 1: Muat daftar kamera yang tersedia
-    }
+    async init() {} // TODO: [] Muat daftar kamera yang tersedia
 
-    async loadCameras() {
-        try {
-            // TODO 1: Implementasi metode untuk memuat daftar kamera yang tersedia
-            
-            // TODO 1.2: Nonaktifkan tombol start jika tidak ada kamera 
-        } catch (error) {
-            // TODO 1.2: Nonaktifkan tombol start jika akses kamera ditolak
+    /**
+     * TODO:
+     * [] Implementasi metode untuk memuat daftar kamera yang tersedia
+    */
+    async loadCamera() {
+        try { } catch (error) {
             this.startBtn.disabled = true;
         }
     }
 
+    /**
+     * TODO:
+     * [] Cek apakah perangkat adalah mobile
+     * [] Pengaturan constraints kamera
+    */
     async startCamera() {
-        // TODO 1: Cek apakah perangkat adalah mobile
         
         try {
             this.startBtn.disabled = true;
             this.startBtn.textContent = 'Starting...';
             
-            // TODO 1: Pengaturan constraints kamera
             this.stream = null;
             
             this.video.srcObject = this.stream;
@@ -54,12 +62,12 @@ class CameraIntegration {
     }
 
     stopCamera() {
-        // TODO 1: Hentikan semua track pada stream kamera
+        // TODO: [] Hentikan semua track pada stream kamera
         this.updateUI();
     }
 
     updateUI() {
-        // TODO 1.2: Perbarui UI setelah kamera dimulai
+        // TODO: [] Perbarui UI setelah kamera dimulai
     }
 
     isActive() {
