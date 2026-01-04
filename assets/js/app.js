@@ -18,7 +18,11 @@ class App {
     */ 
     initializeElements() {}
     
-    bindEvents() {} // TODO: [] Bind event listener untuk memulai prediksi saat video siap
+    /**
+     * TODO:
+     * [] Bind event listener untuk memulai prediksi saat video siap
+    */
+    bindEvents() {}
     
     /**
      * TODO:
@@ -32,25 +36,44 @@ class App {
         }
     }
     
-    // TODO: [] Implementasi metode untuk memulai dan menghentikan prediksi
+/**
+     * TODO:
+     * [] Implementasi metode untuk memulai dan menghentikan prediksi
+     * [] Implementasi metode prediksi
+    */
+    startPrediction() {}
     
-    // TODO: [] Implementasi metode prediksi
+    stopPrediction() {}
+
+    async predict() {}
+
+    updateDisplay(result) {
+        this.predictionLabel.textContent = result.className || 'Unknown';
+        this.predictionConfidence.textContent = `${result.confidence || 0}%`;
+    }
     
-    // TODO: [] Implementasi metode untuk memperbarui tampilan hasil prediksi
+    resetDisplay() {
+        this.predictionLabel.textContent = '-';
+        this.predictionConfidence.textContent = '0%';
+    }
     
-    // TODO: [] Implementasi metode untuk mereset tampilan hasil prediksi
-    
-    // TODO: [] Implementasi metode untuk menampilkan status model
-    
+    showStatus(message, status) {
+        this.modelStatus.textContent = message;
+        this.modelStatus.className = `status ${status}`;
+    }
+
     /**
      * TODO:
      * [] Menghentikan kamera
      * [] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
     */
-    destroy() {}
+    destroy() { }
 }
 
+/**
+ * TODO:
+ * [] Pastikan sumber daya dibersihkan saat jendela ditutup
+*/
 document.addEventListener('DOMContentLoaded', () => {
     const app = new App();
-    // TODO: [] Pastikan sumber daya dibersihkan saat jendela ditutup
 });

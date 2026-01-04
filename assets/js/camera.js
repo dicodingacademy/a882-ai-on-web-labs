@@ -14,6 +14,7 @@ class CameraIntegration {
      * [] Video
      * [] Select Camera
      * [] Start & Stop Button 
+     * [] Pilih FPS 
     */
     initializeElements() {}
 
@@ -26,7 +27,11 @@ class CameraIntegration {
     */
     bindEvents() {}
 
-    async init() {} // TODO: [] Muat daftar kamera yang tersedia
+    /**
+     * TODO:
+     * [] Muat daftar kamera yang tersedia
+    */
+    async init() {}
 
     /**
      * TODO:
@@ -42,6 +47,7 @@ class CameraIntegration {
      * TODO:
      * [] Cek apakah perangkat adalah mobile
      * [] Pengaturan constraints kamera
+     * [] Optimasi frame rate
     */
     async startCamera() {
         
@@ -61,13 +67,20 @@ class CameraIntegration {
         }
     }
 
+     /**
+     * TODO:
+     * [] Hentikan semua track pada stream kamera
+    */
     stopCamera() {
-        // TODO: [] Hentikan semua track pada stream kamera
         this.updateUI();
     }
 
     updateUI() {
-        // TODO: [] Perbarui UI setelah kamera dimulai
+        const active = this.isActive();
+        this.startBtn.disabled = active;
+        this.startBtn.textContent = 'Mulai Kamera';
+        this.stopBtn.disabled = !active;
+        this.cameraSelect.disabled = active;
     }
 
     isActive() {
