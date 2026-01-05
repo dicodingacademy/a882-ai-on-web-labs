@@ -20,12 +20,12 @@ class PoemGenerator {
         this.loadingText = document.getElementById('loading-text');
         this.resultSection = document.getElementById('result-section');
         this.poemOutput = document.getElementById('poem-output');
-        // TODO 3: Inisialisasi elemen tombol salin dan umpan balik salin
+        // TODO: [] Inisialisasi elemen tombol salin dan umpan balik salin
     }
 
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        // TODO 3: Tambahkan event listener untuk tombol salin
+        // TODO: [] Tambahkan event listener untuk tombol salin
     }
 
     async loadModel() {
@@ -66,14 +66,21 @@ class PoemGenerator {
             this.showError('Silakan masukkan tema puisi.');
             return;
         }
-
-        // TODO 2: Panggil fungsi generatePoem dan kirimkan tema dari input
+        
+        // TODO: [] Panggil fungsi generatePoem dan kirimkan tema dari input
     }
-
-    // TODO 2: Logika Generasi Puisi dengan Model AI
-
-    // TODO 3: Logika Copy to Clipboard
-
+    
+    /**
+     * TODO:
+     * [] Logika Generasi Puisi dengan Model AI
+     * [] Menyempurnakan logika loading
+    */
+    
+    /**
+     * TODO:
+     * [] Logika Copy to Clipboard
+    */
+    
     showLoading(message) {
         this.loadingText.textContent = message;
         this.loadingSection.style.display = 'block';
@@ -83,9 +90,13 @@ class PoemGenerator {
     hideLoading() {
         this.loadingSection.style.display = 'none';
     }
-
-    // TODO 2:  Fungsi Tampilkan Hasil Puisi
-
+    
+    /**
+     * TODO:
+     * [] Fungsi Tampilkan Hasil Puisi
+     * [] Auto Scroll
+    */
+    
     hideResult() {
         this.resultSection.style.display = 'none';
     }
@@ -104,8 +115,11 @@ class PoemGenerator {
         this.hideLoading();
         alert(message);
     }
-
-    // TODO 3: COPY FEEDBACK dengan animasi visual
+    
+    /**
+     * TODO:
+     * [] COPY FEEDBACK dengan animasi visual
+    */
 }
 
 document.addEventListener('DOMContentLoaded', () => {
