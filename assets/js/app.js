@@ -24,7 +24,7 @@ class App {
 
     /**
      * TODO:
-     * [*] Panggil konstruktor CameraIntegration
+     * [✓] Panggil konstruktor CameraIntegration
      * [] Panggil konstruktor ObjectDetector
      * [] Load model
     */
