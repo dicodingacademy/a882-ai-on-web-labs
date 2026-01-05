@@ -1,4 +1,5 @@
 import CameraIntegration from "./camera.js";
+import ObjectDetector from "./detection.js";
 
 class App {
     constructor() {
@@ -14,23 +15,40 @@ class App {
     /**
      * TODO:
      * Inisialisasi elemen:
-     * [] Status Model
-     * [] Video & Canvas
-     * [] Hasil Prediksi
+     * [✓] Status Model
+     * [✓] Video & Canvas
+     * [✓] Hasil Prediksi
     */
-    initializeElements() { }
+    initializeElements() { 
+        this.modelStatus = document.getElementById('modelStatus');
+        this.video = document.getElementById('videoElement');
+        this.canvas = document.getElementById('canvasElement');
+        this.predictionLabel = document.getElementById('predictionLabel');
+        this.predictionConfidence = document.getElementById('predictionConfidence');
+    }
 
-    bindEvents() { } // TODO: [] Bind event listener untuk memulai prediksi saat video siap
+    bindEvents() {
+        this.video.addEventListener('loadeddata', () => {
+            if (this.camera.isReady() && this.detector.isLoaded()) {
+                this.startPrediction();
+            }
+        });
+    }
 
     /**
      * TODO:
-     * [*] Panggil konstruktor CameraIntegration
-     * [] Panggil konstruktor ObjectDetector
-     * [] Load model
+     * [✓] Panggil konstruktor CameraIntegration
+     * [✓] Panggil konstruktor ObjectDetector
+     * [✓] Load model
     */
     async init() {
         try {
             this.camera = new CameraIntegration();
+            this.detector = new ObjectDetector();
+
+            this.showStatus('Menunggu model...', 'loading');
+            await this.detector.loadModel();
+            this.showStatus('Model siap', 'ready');
         } catch (error) {
             console.error('Error initializing app:', error);
         }
@@ -38,14 +56,42 @@ class App {
 
     /**
      * TODO:
-     * [] Implementasi metode untuk memulai dan menghentikan prediksi
-     * [] Implementasi metode prediksi
+     * [✓] Implementasi metode untuk memulai dan menghentikan prediksi
+     * [✓] Implementasi metode prediksi
     */
-    startPrediction() {}
+    startPrediction() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.predict();
+    }
     
-    stopPrediction() {}
+    stopPrediction() {
+        this.isRunning = false;
+        this.resetDisplay();
+    }
 
-    async predict() {}
+    async predict() {
+        if (!this.isRunning || !this.camera.isReady() || !this.detector.isLoaded()) {
+            return;
+        }
+        
+        try {
+            const ctx = this.canvas.getContext('2d');
+            this.canvas.width = this.video.videoWidth;
+            this.canvas.height = this.video.videoHeight;
+            ctx.drawImage(this.video, 0, 0);
+            
+            const result = await this.detector.predict(this.canvas);
+            this.updateDisplay(result);
+            
+        } catch (error) {
+            console.error('Prediksi error:', error);
+        }
+        
+        if (this.isRunning) {
+            requestAnimationFrame(() => this.predict());
+        }
+    }
 
     updateDisplay(result) {
         this.predictionLabel.textContent = result.className || 'Unknown';
@@ -64,16 +110,21 @@ class App {
 
     /**
      * TODO:
-     * [] Menghentikan kamera
-     * [] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
+     * [✓] Menghentikan kamera
+     * [✓] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
     */
-    destroy() { }
+    destroy() {
+        this.stopPrediction();
+        this.camera.destroy();
+        this.detector.dispose();
+    }
 }
 
 /**
  * TODO:
- * [] Pastikan sumber daya dibersihkan saat jendela ditutup
+ * [✓] Pastikan sumber daya dibersihkan saat jendela ditutup
 */
 document.addEventListener('DOMContentLoaded', () => {
     const app = new App();
+    window.addEventListener('beforeunload', () => app.destroy());
 });
