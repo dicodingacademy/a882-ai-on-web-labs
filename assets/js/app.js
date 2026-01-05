@@ -20,12 +20,12 @@ class PoemGenerator {
         this.loadingText = document.getElementById('loading-text');
         this.resultSection = document.getElementById('result-section');
         this.poemOutput = document.getElementById('poem-output');
-        // TODO 3: Inisialisasi elemen tombol salin dan umpan balik salin
+        // TODO: [] Inisialisasi elemen tombol salin dan umpan balik salin
     }
 
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        // TODO 3: Tambahkan event listener untuk tombol salin
+        // TODO: [] Tambahkan event listener untuk tombol salin
     }
 
     async loadModel() {
@@ -70,6 +70,11 @@ class PoemGenerator {
         await this.generatePoem(theme);
     }
 
+    /**
+     * TODO:
+     * [✓] Logika Generasi Puisi dengan Model AI
+     * [] Menyempurnakan logika loading
+    */
     async generatePoem(theme) {
         try {
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
@@ -94,8 +99,11 @@ class PoemGenerator {
         }
     }
 
-    // TODO 3: Logika Copy to Clipboard
-
+    /**
+     * TODO:
+     * [] Logika Copy to Clipboard
+    */
+    
     showLoading(message) {
         this.loadingText.textContent = message;
         this.loadingSection.style.display = 'block';
@@ -105,7 +113,11 @@ class PoemGenerator {
     hideLoading() {
         this.loadingSection.style.display = 'none';
     }
-
+    /**
+     * TODO:
+     * [✓] Fungsi Tampilkan Hasil Puisi
+     * [] Auto Scroll
+    */
     showResult(poem) {
         this.poemOutput.textContent = poem;
         this.resultSection.style.display = 'block';
@@ -129,8 +141,11 @@ class PoemGenerator {
         this.hideLoading();
         alert(message);
     }
-
-    // TODO 3: COPY FEEDBACK dengan animasi visual
+    
+    /**
+     * TODO:
+     * [] COPY FEEDBACK dengan animasi visual
+    */
 }
 
 document.addEventListener('DOMContentLoaded', () => {
