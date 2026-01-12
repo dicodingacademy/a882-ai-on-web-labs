@@ -5,6 +5,7 @@ class App {
 		this.camera = null;
 		this.detector = null;
 		this.isRunning = false;
+		this.ctx = null;
 
 		this.initializeElements();
 		this.bindEvents();
