@@ -67,7 +67,6 @@ class CameraIntegration {
 				option.value = camera.deviceId;
 				option.textContent = camera.label || `Kamera ${index + 1}`;
 				this.cameraSelect.appendChild(option);
-
 			});
 
 			this.cameraSelect.disabled = false;

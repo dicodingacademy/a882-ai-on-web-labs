@@ -1,5 +1,5 @@
-import CameraIntegration from "./camera.js";
-import ObjectDetector from "./detection.js";
+import CameraIntegration from './camera.js';
+import ObjectDetector from './detection.js';
 
 class App {
 	constructor() {
@@ -33,7 +33,7 @@ class App {
 			this.ctx = this.canvas.getContext('2d');
 			this.canvas.width = this.video.videoWidth;
 			this.canvas.height = this.video.videoHeight;
-			
+
 			if (this.camera.isReady() && this.detector.isLoaded()) {
 				this.startPrediction();
 			}
