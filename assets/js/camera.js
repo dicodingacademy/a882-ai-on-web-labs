@@ -60,14 +60,13 @@ class CameraIntegration {
 				this.cameraSelect.innerHTML = '<option>Kamera tidak ditemukan</option>';
 				this.startBtn.disabled = true;
 				return;
-			};
-
-			this.cameraSelect.innerHTML = '';
+			}
 
 			cameras.forEach((camera, index) => {
-				camera.id = camera.deviceId;
-				camera.name = camera.label || `Kamera ${index + 1}`;
-				this.cameraSelect.innerHTML += `<option value="${camera.id}">${camera.name}</option>`;
+				const option = document.createElement('option');
+				option.value = camera.deviceId;
+				option.textContent = camera.label || `Kamera ${index + 1}`;
+				this.cameraSelect.appendChild(option);
 			});
 
 			this.cameraSelect.disabled = false;
@@ -85,7 +84,7 @@ class CameraIntegration {
 	 * [✓] Optimasi frame rate
 	*/
 	async startCamera() {
-		const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+		const isMobile = navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 		try {
 			this.startBtn.disabled = true;
