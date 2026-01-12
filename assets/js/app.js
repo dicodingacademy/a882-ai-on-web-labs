@@ -1,73 +1,73 @@
-import CameraIntegration from "./camera.js";
+import CameraIntegration from './camera.js';
 
 class App {
-    constructor() {
-        this.camera = null;
-        this.detector = null;
-        this.isRunning = false;
+	constructor() {
+		this.camera = null;
+		this.detector = null;
+		this.isRunning = false;
 
-        this.initializeElements();
-        this.bindEvents();
-        this.init();
-    }
+		this.initializeElements();
+		this.bindEvents();
+		this.init();
+	}
 
-    /**
-     * TODO:
-     * Inisialisasi elemen:
-     * [] Status Model
-     * [] Video & Canvas
-     * [] Hasil Prediksi
-    */
-    initializeElements() { }
+	/**
+	 * TODO:
+	 * Inisialisasi elemen:
+	 * [] Status Model
+	 * [] Video & Canvas
+	 * [] Hasil Prediksi
+	*/
+	initializeElements() { }
 
-    bindEvents() { } // TODO: [] Bind event listener untuk memulai prediksi saat video siap
+	bindEvents() { } // TODO: [] Bind event listener untuk memulai prediksi saat video siap
 
-    /**
-     * TODO:
-     * [✓] Panggil konstruktor CameraIntegration
-     * [] Panggil konstruktor ObjectDetector
-     * [] Load model
-    */
-    async init() {
-        try {
-            this.camera = new CameraIntegration();
-        } catch (error) {
-            console.error('Error initializing app:', error);
-        }
-    }
+	/**
+	 * TODO:
+	 * [✓] Panggil konstruktor CameraIntegration
+	 * [] Panggil konstruktor ObjectDetector
+	 * [] Load model
+	*/
+	async init() {
+		try {
+			this.camera = new CameraIntegration();
+		} catch (error) {
+			console.error('Error initializing app:', error);
+		}
+	}
 
-    /**
-     * TODO:
-     * [] Implementasi metode untuk memulai dan menghentikan prediksi
-     * [] Implementasi metode prediksi
-    */
-    startPrediction() {}
-    
-    stopPrediction() {}
+	/**
+	 * TODO:
+	 * [] Implementasi metode untuk memulai dan menghentikan prediksi
+	 * [] Implementasi metode prediksi
+	*/
+	startPrediction() { }
 
-    async predict() {}
+	stopPrediction() { }
 
-    updateDisplay(result) {
-        this.predictionLabel.textContent = result.className || 'Unknown';
-        this.predictionConfidence.textContent = `${result.confidence || 0}%`;
-    }
-    
-    resetDisplay() {
-        this.predictionLabel.textContent = '-';
-        this.predictionConfidence.textContent = '0%';
-    }
-    
-    showStatus(message, status) {
-        this.modelStatus.textContent = message;
-        this.modelStatus.className = `status ${status}`;
-    }
+	async predict() { }
 
-    /**
-     * TODO:
-     * [] Menghentikan kamera
-     * [] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
-    */
-    destroy() { }
+	updateDisplay(result) {
+		this.predictionLabel.textContent = result.className || 'Unknown';
+		this.predictionConfidence.textContent = `${result.confidence || 0}%`;
+	}
+
+	resetDisplay() {
+		this.predictionLabel.textContent = '-';
+		this.predictionConfidence.textContent = '0%';
+	}
+
+	showStatus(message, status) {
+		this.modelStatus.textContent = message;
+		this.modelStatus.className = `status ${status}`;
+	}
+
+	/**
+	 * TODO:
+	 * [] Menghentikan kamera
+	 * [] Implementasi metode untuk membersihkan sumber daya saat aplikasi dihentikan
+	*/
+	destroy() { }
 }
 
 /**
@@ -75,5 +75,5 @@ class App {
  * [] Pastikan sumber daya dibersihkan saat jendela ditutup
 */
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new App();
+	const app = new App();
 });
