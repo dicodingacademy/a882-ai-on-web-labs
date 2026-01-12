@@ -6,6 +6,7 @@ class App {
 		this.camera = null;
 		this.detector = null;
 		this.isRunning = false;
+		this.ctx = null;
 
 		this.initializeElements();
 		this.bindEvents();
@@ -29,6 +30,10 @@ class App {
 
 	bindEvents() {
 		this.video.addEventListener('loadeddata', () => {
+			this.ctx = this.canvas.getContext('2d');
+			this.canvas.width = this.video.videoWidth;
+			this.canvas.height = this.video.videoHeight;
+			
 			if (this.camera.isReady() && this.detector.isLoaded()) {
 				this.startPrediction();
 			}
@@ -50,6 +55,7 @@ class App {
 			await this.detector.loadModel();
 			this.showStatus('Model siap', 'ready');
 		} catch (error) {
+			this.showStatus('Gagal memuat model', 'error')
 			console.error('Error initializing app:', error);
 		}
 	}
@@ -76,10 +82,7 @@ class App {
 		}
 
 		try {
-			const ctx = this.canvas.getContext('2d');
-			this.canvas.width = this.video.videoWidth;
-			this.canvas.height = this.video.videoHeight;
-			ctx.drawImage(this.video, 0, 0);
+			this.ctx.drawImage(this.video, 0, 0);
 
 			const result = await this.detector.predict(this.canvas);
 			this.updateDisplay(result);

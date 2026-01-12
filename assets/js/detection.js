@@ -42,21 +42,24 @@ class ObjectDetector {
 				.div(255.0)
 				.expandDims(0)
 		);
-
 		const predictions = this.model.predict(tensor);
-		const values = await predictions.data();
 
-		const maxIndex = values.indexOf(Math.max(...values));
-		const result = {
-			className: this.labels[maxIndex],
-			confidence: Math.round(values[maxIndex] * 100)
-		};
+		try {
+			const values = await predictions.data();
 
-		// Cleanup
-		tensor.dispose();
-		predictions.dispose();
-
-		return result;
+			const maxIndex = values.indexOf(Math.max(...values));
+			const result = {
+				className: this.labels[maxIndex],
+				confidence: Math.round(values[maxIndex] * 100)
+			};
+			return result;
+		} catch (error) {
+			console.error('Error during prediction:', error);
+			return { className: 'Error', confidence: 0 };
+		} finally {
+			tensor.dispose();
+			predictions.dispose();
+		}
 	}
 
 	isLoaded() {
