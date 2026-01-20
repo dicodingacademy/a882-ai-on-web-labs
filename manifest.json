@@ -1,6 +1,6 @@
 {
-  "name": "NutriVision - AI Food Analyzer",
-  "short_name": "NutriVision",
+  "name": "NutriApp - AI Food Analyzer",
+  "short_name": "NutriApp",
   "description": "Aplikasi AI untuk mengenali makanan dan memberikan informasi nutrisi",
   "start_url": "/",
   "display": "standalone",
