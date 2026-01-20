@@ -45,7 +45,7 @@ class NutritionService {
 
       await createDelay(this.config.generationDelay);
 
-      const prompt = `Tulis fakta nutrisi sederhana tentang ${fruitName}. Sertakan manfaat nutrisi utama dalam 1-2 kalimat.`;
+      const prompt = `Write a simple nutrition fact about ${fruitName}. Include key nutritional benefits in 1-2 sentences.`;
 
       const result = await this.generator(prompt, {
         max_new_tokens: this.config.maxTokens,

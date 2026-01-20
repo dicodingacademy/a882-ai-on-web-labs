@@ -5,7 +5,7 @@ import {
   logError
 } from './utils.js';
 
-class NutriVisionApp {
+class NutriAppApp {
   constructor() {
     this.detector = null;
     this.camera = null;
@@ -59,7 +59,8 @@ class NutriVisionApp {
 
   /**
    * TODO:
-   * [] Register Service Worker agar aplikasi dapat diakses secara offline.:
+   * [] Register Service Worker agar aplikasi dapat diakses secara offline.
+   * [] Konfigurasi file sw.js untuk caching aset-aset penting aplikasi.
   */
 
   toggleCamera() {
@@ -75,11 +76,6 @@ class NutriVisionApp {
     }
   }
 
-  /**
- * TODO:
- * [] Register Service Worker agar aplikasi dapat diakses secara offline.
-   * [] Konfigurasi file sw.js untuk caching aset-aset penting aplikasi.
-*/
   async startCamera() {
     try {
       this.ui.updateCameraUI(true);
@@ -124,7 +120,7 @@ class NutriVisionApp {
 
   /**
    * TODO:
-   * Tambahkan logika utama untuk proses deteksi dan generatif di dalam detectLoop.:
+   * Tambahkan logika utama untuk proses deteksi dan generatif di dalam detectLoop.
    * [] Deteksi objek menggunakan this.detector.predict().
    * [] Jika deteksi valid menggunakan isValidDetection(), lalu hentikan loop deteksi.
    * [] Panggil method this.generateAndShowResults() untuk menampilkan hasil deteksi dan generasi nutrisi.
@@ -195,11 +191,11 @@ class NutriVisionApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  new NutriVisionApp();
+  new NutriAppApp();
 
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 });
 
-export default NutriVisionApp;
+export default NutriAppApp;
