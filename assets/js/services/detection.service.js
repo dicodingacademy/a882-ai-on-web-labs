@@ -38,7 +38,6 @@ class DetectionService {
         labels: this.labels,
         modelName: metadata.modelName || 'Unknown',
         version: metadata.version || '1.0.0',
-        backend: backendName
       };
 
     } catch (error) {
