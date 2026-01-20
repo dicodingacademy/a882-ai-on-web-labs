@@ -37,5 +37,6 @@ assets/js/
 ├── ui/                            # Antarmuka pengguna
 |    └── ui.handler.js             # Manajemen DOM dan UI
 ├── index.html                     # Halaman utama
+├── manifest.json                  # File manifest
 └── README.md                      # Dokumentasi
 ```
