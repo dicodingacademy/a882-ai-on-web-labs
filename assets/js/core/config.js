@@ -46,3 +46,9 @@ export const CAMERA_CONFIG = {
   mobileFacingMode: 'environment'
 };
 
+export const PERFORMANCE_CONFIG = {
+  operations: 0,
+  totalTime: 0,
+  averageTime: 0
+};
+
