@@ -52,6 +52,7 @@ class NutritionService {
 
     try {
       this.isGenerating = true;
+      const startTime = performance.now();
 
       await createDelay(this.config.generationDelay);
 
