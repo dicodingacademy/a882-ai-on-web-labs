@@ -5,6 +5,7 @@ import {
   updatePerformanceStats,
   createPerformanceResult,
   PERFORMANCE_CONFIG,
+  logPerformance,
 } from '../core/utils.js';
 
 class DetectionService {
