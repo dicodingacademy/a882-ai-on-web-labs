@@ -1,7 +1,7 @@
 import {
   TENSORFLOW_CONFIG,
   validateModelMetadata,
-  logError
+  logError,
 } from '../core/utils.js';
 
 class DetectionService {
@@ -16,9 +16,14 @@ class DetectionService {
     };
   }
 
+  /**
+  * TODO:
+  * Konfigurasi backend TensorFlow.js:
+  * [] Cek ketersediaan WebGPU.
+  * [] Set backend yang optimal.
+  */
   async loadModel() {
     try {
-
       await tf.ready();
 
       const [metadata, model] = await Promise.all([

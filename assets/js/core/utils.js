@@ -102,6 +102,36 @@ export const addScaleAnimation = (element, callback) => {
   }, animationDuration);
 };
 
+export const isWebGPUSupported = () => {
+  return typeof navigator !== 'undefined' && 'gpu' in navigator;
+};
+
+export const getOptimalBackend = (preferredBackend) => {
+  if (preferredBackend === 'webgpu' && !isWebGPUSupported()) {
+    console.warn('WebGPU tidak didukung, beralih ke fallback');
+    return 'webgl';
+  }
+  return preferredBackend;
+};
+
+export const configureTransformersBackend = (env, backend) => {
+  try {
+    if (backend === 'webgpu' && 'gpu' in navigator) {
+      env.backends.onnx.webgpu = true;
+      console.log('WebGPU backend untuk Transformers.js');
+      return 'WebGPU';
+    } else {
+      env.backends.onnx.webgpu = false;
+      env.backends.onnx.wasm.numThreads = navigator.hardwareConcurrency || 4;
+      console.log('WebAssembly backend untuk Transformers.js');
+      return 'WebAssembly';
+    }
+  } catch (error) {
+    console.warn('Menggunakan backend default Transformers.js');
+    return 'Default';
+  }
+};
+
 export const hideElement = (element) => {
   if (element) element.classList.add('hidden');
 };
