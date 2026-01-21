@@ -3,7 +3,8 @@ import {
   TRANSFORMERS_CONFIG,
   createDelay,
   logError,
-  logPerformance
+  logPerformance,
+  updatePerformanceStats
 } from '../core/utils.js';
 
 class NutritionService {
