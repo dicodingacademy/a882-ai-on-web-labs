@@ -12,6 +12,12 @@ class NutritionService {
     this.config = TRANSFORMERS_CONFIG;
   }
 
+  /**
+  * TODO:
+  * Konfigurasi backend Transformers.js:
+  * [] Cek ketersediaan WebGPU.
+  * [] Set backend yang optimal.
+  */
   async loadModel() {
     try {
       const { pipeline } = await import(this.config.cdnUrl);
