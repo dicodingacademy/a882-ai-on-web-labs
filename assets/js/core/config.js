@@ -11,19 +11,17 @@ export const TENSORFLOW_CONFIG = {
   inputSize: [224, 224],
   normalizationFactor: 255.0,
   confidenceThreshold: 0.7,
+  defaultBackend: 'webgl'
 };
 
-/**
-* TODO:
-* [] Tambahkan konfigurasi untuk menggunakan backend yang spesifik, menggunakan defaultBackend.
-*/
 export const TRANSFORMERS_CONFIG = {
   modelName: 'Xenova/LaMini-Flan-T5-77M',
   cdnUrl: 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2',
   maxTokens: 80,
   temperature: 0.3,
   topP: 0.8,
-  generationDelay: 500
+  generationDelay: 500,
+  defaultBackend: 'webgl'
 };
 
 export const UI_CONFIG = {
