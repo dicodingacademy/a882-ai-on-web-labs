@@ -2,6 +2,9 @@ import {
   TENSORFLOW_CONFIG,
   validateModelMetadata,
   logError,
+  updatePerformanceStats,
+  createPerformanceResult,
+  PERFORMANCE_CONFIG,
 } from '../core/utils.js';
 
 class DetectionService {
@@ -9,11 +12,7 @@ class DetectionService {
     this.model = null;
     this.labels = [];
     this.config = TENSORFLOW_CONFIG;
-    this.performanceStats = {
-      predictions: 0,
-      totalTime: 0,
-      averageTime: 0
-    };
+    this.performanceStats = PERFORMANCE_CONFIG;
   }
 
   /**
@@ -51,13 +50,6 @@ class DetectionService {
     }
   }
 
-  /**
-  * TODO:
-  * Meninjau performa prediksi model TensorFlow.js.
-  * [] Hitung waktu prediksi menggunakan performance.now().
-  * [] Perbarui statistik performa di this.performanceStats.
-  * [] Log hasil prediksi dan waktu yang dibutuhkan ke konsol.
-  */
   async predict(imageElement) {
     if (!this.model) {
       throw new Error('Model belum dimuat. Panggil loadModel() terlebih dahulu.');
@@ -69,6 +61,7 @@ class DetectionService {
 
     let tensor = null;
     let predictions = null;
+    const startTime = performance.now();
 
     try {
       tensor = tf.tidy(() => {
@@ -81,16 +74,30 @@ class DetectionService {
       predictions = this.model.predict(tensor);
       const values = await predictions.data();
 
+      const endTime = performance.now();
+      const predictionTime = endTime - startTime;
+
+      updatePerformanceStats(this.performanceStats, predictionTime);
+
       const maxIndex = values.indexOf(Math.max(...values));
       const confidence = Math.round(values[maxIndex] * 100);
       const className = this.labels[maxIndex];
       const isValid = confidence >= (this.config.confidenceThreshold * 100);
+      const backendName = tf.getBackend();
 
       const result = {
         className: className,
         confidence: confidence,
         isValid: isValid,
+        performance: createPerformanceResult(
+          predictionTime,
+          backendName,
+          this.performanceStats.averageTime,
+          this.performanceStats.operations
+        )
       };
+
+      logPerformance(backendName, predictionTime, this.performanceStats.averageTime);
 
       return result;
 

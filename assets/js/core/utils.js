@@ -3,7 +3,8 @@ import {
   UI_CONFIG,
   CAMERA_CONFIG,
   TENSORFLOW_CONFIG,
-  TRANSFORMERS_CONFIG
+  TRANSFORMERS_CONFIG,
+  PERFORMANCE_CONFIG
 } from './config.js';
 
 export const isMobileDevice = () => {
@@ -132,6 +133,24 @@ export const configureTransformersBackend = (env, backend) => {
   }
 };
 
+export const updatePerformanceStats = (stats, operationTime) => {
+  stats.operations++;
+  stats.totalTime += operationTime;
+  stats.averageTime = stats.totalTime / stats.operations;
+  return stats;
+};
+
+export const logPerformance = (backend, operationTime, averageTime) => {
+  console.log(`⚡ ${backend.toUpperCase()}: ${Math.round(operationTime)}ms (avg: ${Math.round(averageTime)}ms)`);
+};
+
+export const createPerformanceResult = (operationTime, backend, averageTime, totalOperations) => ({
+  operationTime: Math.round(operationTime),
+  backend: backend,
+  averageTime: Math.round(averageTime),
+  totalOperations: totalOperations
+});
+
 export const hideElement = (element) => {
   if (element) element.classList.add('hidden');
 };
@@ -160,5 +179,6 @@ export {
   APP_CONFIG,
   TENSORFLOW_CONFIG,
   TRANSFORMERS_CONFIG,
-  UI_CONFIG
+  UI_CONFIG,
+  PERFORMANCE_CONFIG
 };

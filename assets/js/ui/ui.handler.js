@@ -47,7 +47,6 @@ class UIHandler {
     this.resName = document.getElementById('res-name');
     this.resConfidence = document.getElementById('res-confidence');
     this.resBar = document.getElementById('res-bar');
-    this.performanceInfo = document.getElementById('performance-info');
     this.nutriFact = document.getElementById('nutri-fact');
 
     // Cache nutrition elements
@@ -196,10 +195,6 @@ class UIHandler {
     }
   }
 
-  /**
-  * TODO:
-  * [] Tampilkan informasi performa prediksi.
-  */
   showResults(prediction, nutrition) {
     this.switchToState('result');
 

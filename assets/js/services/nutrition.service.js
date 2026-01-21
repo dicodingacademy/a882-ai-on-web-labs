@@ -1,4 +1,5 @@
 import {
+  PERFORMANCE_CONFIG,
   TRANSFORMERS_CONFIG,
   createDelay,
   logError
@@ -11,6 +12,7 @@ class NutritionService {
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
+    this.performanceStats = PERFORMANCE_CONFIG;
   }
 
   /**
@@ -61,12 +63,25 @@ class NutritionService {
         top_p: this.config.topP
       });
 
+      const endTime = performance.now();
+      const generationTime = endTime - startTime;
+      
+      updatePerformanceStats(this.performanceStats, generationTime);
+
       const generatedText = result[0].generated_text;
+      const backendName = this.currentBackend;
+
+      logPerformance(backendName, generationTime, this.performanceStats.averageTime);
 
       return {
         nutritionFact: generatedText.trim(),
         generated: true,
-        source: 'Dihasilkan AI'
+        performance: createPerformanceResult(
+          generationTime,
+          backendName,
+          this.performanceStats.averageTime,
+          this.performanceStats.operations
+        )
       };
 
     } catch (error) {
