@@ -2,6 +2,7 @@ import {
   PERFORMANCE_CONFIG,
   TRANSFORMERS_CONFIG,
   createDelay,
+  createPerformanceResult,
   logError,
   logPerformance,
   updatePerformanceStats
