@@ -10,6 +10,7 @@ class NutritionService {
     this.isModelLoaded = false;
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
+    this.currentBackend = null;
   }
 
   /**
