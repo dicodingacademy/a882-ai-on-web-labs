@@ -19,13 +19,19 @@ class DetectionService {
   /**
   * TODO:
   * Konfigurasi backend TensorFlow.js:
-  * [] Cek ketersediaan WebGPU.
-  * [] Set backend yang optimal.
+  * [✓] Cek ketersediaan WebGPU.
+  * [✓] Set backend yang optimal.
   */
   async loadModel() {
     try {
+      const backend = (this.config.defaultBackend === 'webgpu' && isWebGPUSupported()) ? 'webgpu' : 'webgl';
+
+      await tf.setBackend(backend);
       await tf.ready();
 
+      const backendName = tf.getBackend();
+      console.log(`Backend TensorFlow.js yang digunakan: ${backendName}`);
+      
       const [metadata, model] = await Promise.all([
         fetch(this.config.metadataPath).then(r => r.json()),
         tf.loadLayersModel(this.config.modelPath)
@@ -43,6 +49,7 @@ class DetectionService {
         labels: this.labels,
         modelName: metadata.modelName || 'Unknown',
         version: metadata.version || '1.0.0',
+        backend: backendName
       };
 
     } catch (error) {

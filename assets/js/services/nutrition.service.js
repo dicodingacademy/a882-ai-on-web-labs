@@ -21,20 +21,24 @@ class NutritionService {
   /**
   * TODO:
   * Konfigurasi backend Transformers.js:
-  * [] Cek ketersediaan WebGPU.
-  * [] Set backend yang optimal.
+  * [✓] Cek ketersediaan WebGPU.
+  * [✓] Set backend yang optimal.
   */
   async loadModel() {
     try {
       const { pipeline } = await import(this.config.cdnUrl);
 
+      const device = (this.config.defaultBackend === 'webgpu' && isWebGPUSupported()) ? 'webgpu' : 'wasm';
+      console.log(`Backend Transformers.js yang digunakan: ${device}`);
+
       this.generator = await pipeline(
         'text2text-generation',
-        this.config.modelName
+        this.config.modelName,
+        { device }
       );
       
       this.isModelLoaded = true;
-      this.currentBackend = '';
+      this.currentBackend = device;
 
       return { success: true, model: this.config.modelName };
 
