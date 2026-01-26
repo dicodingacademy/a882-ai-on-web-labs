@@ -11,7 +11,6 @@ export const TENSORFLOW_CONFIG = {
   inputSize: [224, 224],
   normalizationFactor: 255.0,
   confidenceThreshold: 0.7,
-  defaultBackend: 'webgl'
 };
 
 export const TRANSFORMERS_CONFIG = {
@@ -21,7 +20,6 @@ export const TRANSFORMERS_CONFIG = {
   temperature: 0.3,
   topP: 0.8,
   generationDelay: 500,
-  defaultBackend: 'webgl'
 };
 
 export const UI_CONFIG = {

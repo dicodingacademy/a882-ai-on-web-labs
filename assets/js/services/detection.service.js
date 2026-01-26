@@ -98,7 +98,7 @@ class DetectionService {
         )
       };
 
-      logPerformance(backendName, predictionTime, this.performanceStats.averageTime);
+      logPerformance('Detection', backendName, predictionTime, this.performanceStats.averageTime);
 
       return result;
 

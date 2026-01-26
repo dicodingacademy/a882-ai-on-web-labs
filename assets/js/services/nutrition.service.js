@@ -75,7 +75,7 @@ class NutritionService {
       const generatedText = result[0].generated_text;
       const backendName = this.currentBackend;
 
-      logPerformance(backendName, generationTime, this.performanceStats.averageTime);
+      logPerformance('Generative', backendName, generationTime, this.performanceStats.averageTime);
 
       return {
         nutritionFact: generatedText.trim(),
