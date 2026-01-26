@@ -23,6 +23,7 @@ class NutriApp {
 
     this.bindEvents();
     this.init();
+    this.registerServiceWorker();
   }
 
   bindEvents() {
@@ -80,9 +81,21 @@ class NutriApp {
 
   /**
    * TODO:
-   * [] Register Service Worker agar aplikasi dapat diakses secara offline.
-   * [] Konfigurasi file sw.js untuk caching aset-aset penting aplikasi.
+   * [✓] Register Service Worker agar aplikasi dapat diakses secara offline.
+   * [✓] Konfigurasi file sw.js untuk caching aset-aset penting aplikasi.
   */
+  registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((registration) => {
+          console.log('SW terdaftar:', registration);
+        })
+        .catch((error) => {
+          console.log('Pendaftaran SW gagal:', error);
+        });
+    }
+  }
 
   toggleCamera() {
     if (!this.detector || !this.detector.isLoaded()) {
