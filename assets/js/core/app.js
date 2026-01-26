@@ -5,7 +5,7 @@ import {
   logError
 } from './utils.js';
 
-class NutriAppApp {
+class NutriApp {
   constructor() {
     this.detector = null;
     this.camera = null;
@@ -191,11 +191,11 @@ class NutriAppApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  new NutriAppApp();
+  new NutriApp();
 
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 });
 
-export default NutriAppApp;
+export default NutriApp;
