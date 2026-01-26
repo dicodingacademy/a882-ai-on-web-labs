@@ -32,8 +32,9 @@ class NutritionService {
         'text2text-generation',
         this.config.modelName
       );
-
+      
       this.isModelLoaded = true;
+      this.currentBackend = '';
 
       return { success: true, model: this.config.modelName };
 
