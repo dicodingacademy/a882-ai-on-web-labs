@@ -6,6 +6,7 @@ import {
   createPerformanceResult,
   PERFORMANCE_CONFIG,
   logPerformance,
+  isWebGPUSupported,
 } from '../core/utils.js';
 
 class DetectionService {
