@@ -3,6 +3,7 @@ import {
   TRANSFORMERS_CONFIG,
   createDelay,
   createPerformanceResult,
+  isWebGPUSupported,
   logError,
   logPerformance,
   updatePerformanceStats
