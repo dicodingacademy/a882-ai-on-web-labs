@@ -25,7 +25,7 @@ class DetectionService {
   */
   async loadModel() {
     try {
-      const backend = (this.config.defaultBackend === 'webgpu' && isWebGPUSupported()) ? 'webgpu' : 'webgl';
+      const backend = isWebGPUSupported() ? 'webgpu' : 'webgl';
 
       await tf.setBackend(backend);
       await tf.ready();

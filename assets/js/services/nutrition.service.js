@@ -29,7 +29,7 @@ class NutritionService {
     try {
       const { pipeline } = await import(this.config.cdnUrl);
 
-      const device = (this.config.defaultBackend === 'webgpu' && isWebGPUSupported()) ? 'webgpu' : 'wasm';
+      const device = isWebGPUSupported() ? 'webgpu' : 'wasm';
       console.log(`Backend Transformers.js yang digunakan: ${device}`);
 
       this.generator = await pipeline(
