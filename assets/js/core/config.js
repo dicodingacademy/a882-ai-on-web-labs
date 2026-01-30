@@ -15,7 +15,7 @@ export const TENSORFLOW_CONFIG = {
 
 export const TRANSFORMERS_CONFIG = {
   modelName: 'Xenova/LaMini-Flan-T5-77M',
-  cdnUrl: 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2',
+  cdnUrl: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1',
   maxTokens: 80,
   temperature: 0.3,
   topP: 0.8,
