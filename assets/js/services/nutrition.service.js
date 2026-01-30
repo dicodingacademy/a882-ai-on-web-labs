@@ -35,7 +35,7 @@ class NutritionService {
       this.generator = await pipeline(
         'text2text-generation',
         this.config.modelName,
-        { device }
+        { dtype: "q4", device },
       );
       
       this.isModelLoaded = true;
