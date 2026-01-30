@@ -35,7 +35,7 @@ class PoemGenerator {
             this.disableInput();
 
             // Mengimpor library secara dinamis
-            const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+            const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
 
             // Inisialisasi model
             this.generator = await pipeline(
