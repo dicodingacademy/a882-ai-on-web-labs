@@ -1,4 +1,3 @@
-import { pipeline, env } from '@xenova/transformers';
 import { TRANSFORMERS_CONFIG } from '../utils/config.js';
 import {
   createDelay,
@@ -9,6 +8,7 @@ import {
   createPerformanceResult,
   createPerformanceStats
 } from '../utils/common.js';
+import { pipeline, env } from '@huggingface/transformers';
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
@@ -30,7 +30,7 @@ export class NutritionService {
       this.generator = await pipeline(
         'text2text-generation',
         this.config.modelName,
-        { device }
+        { dtype: 'q4', device }
       );
 
       this.isModelLoaded = true;
