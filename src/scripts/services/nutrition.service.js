@@ -1,3 +1,4 @@
+import { pipeline } from '@huggingface/transformers';
 import { TRANSFORMERS_CONFIG, createDelay, isWebGPUSupported, logError } from '../utils/index.js';
 
 class NutritionService {
@@ -11,11 +12,9 @@ class NutritionService {
 
   async loadModel() {
     try {
-      const { pipeline } = await import('@xenova/transformers');
-
       const device = isWebGPUSupported() ? 'webgpu' : 'wasm';
 
-      this.generator = await pipeline('text2text-generation', this.config.modelName, { device });
+      this.generator = await pipeline('text2text-generation', this.config.modelName, { dtype: "q4", device });
 
       await createDelay(1000);
 

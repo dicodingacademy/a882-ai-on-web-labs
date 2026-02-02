@@ -31,10 +31,16 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
     ],
+    parser: {
+      javascript: {
+        importMeta: true,
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
+      scriptLoading: 'module',
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -50,4 +56,7 @@ module.exports = {
       ],
     }),
   ],
+  stats: {
+    warningsFilter: /import\.meta/,
+  },
 };
