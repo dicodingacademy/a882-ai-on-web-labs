@@ -261,7 +261,7 @@ class UIHandler {
 
       this.btnToggle.addEventListener('click', handler);
 
-      // Store cleanup function - easy to understand!
+      // Store cleanup function
       this.cleanupFunctions.push(() => {
         this.btnToggle.removeEventListener('click', handler);
       });
