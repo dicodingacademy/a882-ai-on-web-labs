@@ -39,9 +39,15 @@ class PoemGenerator {
             const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
 
             // Inisialisasi model
+            /**
+             * @review
+             * Apakah memang tidak menggunakan versi q4?
+             * Hal ini penting untuk memperkecil ukuran model yang perlu di-download.
+             */
             this.generator = await pipeline(
                 'text2text-generation',
-                'Xenova/LaMini-Flan-T5-77M'
+                'Xenova/LaMini-Flan-T5-77M',
+                { dtype: 'q4'}
             );
 
             // Menandai bahwa model telah siap digunakan
