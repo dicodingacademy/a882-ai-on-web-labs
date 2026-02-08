@@ -91,6 +91,18 @@ class PoemGenerator {
              */
             await new Promise(resolve => setTimeout(resolve, 100));
 
+
+            /**
+             * @review
+             * Mungkin perlu ada penjelasan bahwa templating prompt seperti di bawah ini bukanlah best practice (hanya untuk memudahkan pembelajaran dulu saja)
+             * karena siswa bisa aja jail dengan melakukan prompt injection.
+             *
+             * Ini kesempatan bagus juga untuk memperkenalkan/menyinggung konsep prompt injection.
+             *
+             * Beberapa hal preventif terkait ini:
+             * 1. Untuk kasus ini, ada baiknya kasih validasi, yaitu hanya menerima 1-3 kata sebagai tema.
+             * 2. Menambahkan prompt yang sifatnya "guard" agar dia menolak jika ada input yang mencoba inject.
+             */
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
 
             const result = await this.generator(prompt, {
