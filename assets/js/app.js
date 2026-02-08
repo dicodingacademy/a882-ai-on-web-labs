@@ -131,6 +131,12 @@ class PoemGenerator {
 
     hideLoading() {
         this.loadingSection.style.display = 'none';
+        /**
+         * @review
+         * `this.loadingSection.style.visibility` tetap menggantung nilainya di `visible`.
+         * bisa ditambahkan juga untuk set visibility ke `hidden`.
+         */
+        this.loadingSection.style.visibility = 'hidden';
     }
 
     showResult(poem) {
