@@ -11,11 +11,6 @@ export default defineConfig({
         globPatterns: [
           '**/*.{js,css,html,ico,png,svg,json,bin}'
         ],
-        additionalManifestEntries: [
-          { url: '/model/model.json', revision: '1.0.0' },
-          { url: '/model/metadata.json', revision: '1.0.0' },
-          { url: '/model/weights.bin', revision: '1.0.0' }
-        ],
         maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB
         skipWaiting: true,
         clientsClaim: true
