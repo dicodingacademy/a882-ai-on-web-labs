@@ -84,6 +84,11 @@ class PoemGenerator {
             this.disableInput();
             this.hideResult();
 
+            /**
+             * @review
+             * Penjelasan ini ada di materi modul 3, tapi kalo PoV-nya hanya melihat kode cukup bingung awalnya kenapa perlu ada timeout di sini.
+             * Maybe bisa ditambahkan short comment yang menjelaskan, kenapa perlu set-timeout di sini.
+             */
             await new Promise(resolve => setTimeout(resolve, 100));
 
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
