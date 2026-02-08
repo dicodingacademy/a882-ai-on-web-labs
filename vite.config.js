@@ -70,7 +70,7 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'tensorflow': ['@tensorflow/tfjs', '@tensorflow/tfjs-backend-webgpu'],
-          'transformers': ['@xenova/transformers']
+          'transformers': ['@huggingface/transformers']
         }
       }
     }
