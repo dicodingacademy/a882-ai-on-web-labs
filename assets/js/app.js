@@ -47,7 +47,26 @@ class PoemGenerator {
             this.generator = await pipeline(
                 'text2text-generation',
                 'Xenova/LaMini-Flan-T5-77M',
-                { dtype: 'q4'}
+                {
+                    dtype: 'q4',
+                    /**
+                     * @review
+                     * Dari PoV end-user, kayaknya nunggu loading tanpa ada progress adalah hal yang horor hehe
+                     * Jadi alangkah lebih baiknya di-show saja progres downloadnya agar user punya ekspektasi untuk menunggu sampai kapan.
+                     *
+                     * reference: https://huggingface.co/docs/transformers.js/tutorials/react
+                     */
+                    progress_callback: (() => {
+                        const state = { encoder: 0, decoder: 0 };
+                        return (progress) => {
+                            if (progress.status === 'progress' && progress.file) {
+                                state.encoder = progress.file.includes('encoder') ? Math.round(progress.progress || 0) : state.encoder;
+                                state.decoder = progress.file.includes('decoder') ? Math.round(progress.progress || 0) : state.decoder;
+                                this.showLoading(`Mengunduh model AI...\nEncoder: ${state.encoder}% | Decoder: ${state.decoder}%`);
+                            }
+                        }
+                    })(),
+                },
             );
 
             // Menandai bahwa model telah siap digunakan
