@@ -41,7 +41,20 @@ class PoemGenerator {
             // Inisialisasi model
             this.generator = await pipeline(
                 'text2text-generation',
-                'Xenova/LaMini-Flan-T5-77M'
+                'Xenova/LaMini-Flan-T5-77M',
+                {
+                    dtype: 'q4',
+                    progress_callback: (() => {
+                        const state = { encoder: 0, decoder: 0 };
+                        return (progress) => {
+                            if (progress.status === 'progress' && progress.file) {
+                                state.encoder = progress.file.includes('encoder') ? Math.round(progress.progress || 0) : state.encoder;
+                                state.decoder = progress.file.includes('decoder') ? Math.round(progress.progress || 0) : state.decoder;
+                                this.showLoading(`Mengunduh model AI...\nEncoder: ${state.encoder}% | Decoder: ${state.decoder}%`);
+                            }
+                        }
+                    })(),
+                },
             );
 
             // Menandai bahwa model telah siap digunakan
@@ -78,7 +91,25 @@ class PoemGenerator {
             this.disableInput();
             this.hideResult();
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 100)); // Memberi jeda singkat agar UI sempat update
+
+            const MAX_THEME_LENGTH = 30;
+
+            // Sanitize: Hapus karakter-karakter yang sering digunakan untuk prompt injection
+            theme = theme
+                .replace(/[|]{2,}/g, '')          // Hapus ||| (separator injection)
+                .replace(/[#=]{2,}/g, '')         // Hapus ###, == (marker section)
+                .replace(/(--|\+\+|``)/g, '')     // Hapus --, ++, `` (marker kode)
+                .replace(/\n/g, ' ')              // Hapus newline
+                .trim();
+
+            // Validasi setelah sanitasi
+            if (!theme || theme.length > MAX_THEME_LENGTH) {
+                this.showError(`Tema harus 1-${MAX_THEME_LENGTH} karakter.`);
+                this.enableInput();
+                this.isGenerating = false;
+                return;
+            }
 
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
 
@@ -125,6 +156,7 @@ class PoemGenerator {
 
     hideLoading() {
         this.loadingSection.style.display = 'none';
+        this.loadingSection.style.visibility = 'hidden';
     }
 
     showResult(poem) {
