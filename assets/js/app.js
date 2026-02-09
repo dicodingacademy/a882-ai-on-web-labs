@@ -91,7 +91,7 @@ class PoemGenerator {
             this.disableInput();
             this.hideResult();
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 100)); // Memberi jeda singkat agar UI sempat update
 
             const MAX_THEME_LENGTH = 30;
 
