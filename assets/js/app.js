@@ -39,23 +39,11 @@ class PoemGenerator {
             const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
 
             // Inisialisasi model
-            /**
-             * @review
-             * Apakah memang tidak menggunakan versi q4?
-             * Hal ini penting untuk memperkecil ukuran model yang perlu di-download.
-             */
             this.generator = await pipeline(
                 'text2text-generation',
                 'Xenova/LaMini-Flan-T5-77M',
                 {
                     dtype: 'q4',
-                    /**
-                     * @review
-                     * Dari PoV end-user, kayaknya nunggu loading tanpa ada progress adalah hal yang horor hehe
-                     * Jadi alangkah lebih baiknya di-show saja progres downloadnya agar user punya ekspektasi untuk menunggu sampai kapan.
-                     *
-                     * reference: https://huggingface.co/docs/transformers.js/tutorials/react
-                     */
                     progress_callback: (() => {
                         const state = { encoder: 0, decoder: 0 };
                         return (progress) => {
@@ -103,25 +91,26 @@ class PoemGenerator {
             this.disableInput();
             this.hideResult();
 
-            /**
-             * @review
-             * Penjelasan ini ada di materi modul 3, tapi kalo PoV-nya hanya melihat kode cukup bingung awalnya kenapa perlu ada timeout di sini.
-             * Maybe bisa ditambahkan short comment yang menjelaskan, kenapa perlu set-timeout di sini.
-             */
             await new Promise(resolve => setTimeout(resolve, 100));
 
+            const MAX_THEME_LENGTH = 30;
 
-            /**
-             * @review
-             * Mungkin perlu ada penjelasan bahwa templating prompt seperti di bawah ini bukanlah best practice (hanya untuk memudahkan pembelajaran dulu saja)
-             * karena siswa bisa aja jail dengan melakukan prompt injection.
-             *
-             * Ini kesempatan bagus juga untuk memperkenalkan/menyinggung konsep prompt injection.
-             *
-             * Beberapa hal preventif terkait ini:
-             * 1. Untuk kasus ini, ada baiknya kasih validasi, yaitu hanya menerima 1-3 kata sebagai tema.
-             * 2. Menambahkan prompt yang sifatnya "guard" agar dia menolak jika ada input yang mencoba inject.
-             */
+            // Sanitize: Hapus karakter-karakter yang sering digunakan untuk prompt injection
+            theme = theme
+                .replace(/[|]{2,}/g, '')          // Hapus ||| (separator injection)
+                .replace(/[#=]{2,}/g, '')         // Hapus ###, == (marker section)
+                .replace(/(--|\+\+|``)/g, '')     // Hapus --, ++, `` (marker kode)
+                .replace(/\n/g, ' ')              // Hapus newline
+                .trim();
+
+            // Validasi setelah sanitasi
+            if (!theme || theme.length > MAX_THEME_LENGTH) {
+                this.showError(`Tema harus 1-${MAX_THEME_LENGTH} karakter.`);
+                this.enableInput();
+                this.isGenerating = false;
+                return;
+            }
+
             const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
 
             const result = await this.generator(prompt, {
@@ -167,11 +156,6 @@ class PoemGenerator {
 
     hideLoading() {
         this.loadingSection.style.display = 'none';
-        /**
-         * @review
-         * `this.loadingSection.style.visibility` tetap menggantung nilainya di `visible`.
-         * bisa ditambahkan juga untuk set visibility ke `hidden`.
-         */
         this.loadingSection.style.visibility = 'hidden';
     }
 
