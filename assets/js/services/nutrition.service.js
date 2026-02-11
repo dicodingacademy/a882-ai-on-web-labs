@@ -10,13 +10,14 @@ import {
 } from '../core/utils.js';
 
 class NutritionService {
-  constructor() {
+  constructor(ui = null) {
     this.generator = null;
     this.isModelLoaded = false;
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
     this.performanceStats = PERFORMANCE_CONFIG;
+    this.ui = ui; // Instance UI untuk feedback progress
   }
 
   /**
@@ -35,7 +36,27 @@ class NutritionService {
       this.generator = await pipeline(
         'text2text-generation',
         this.config.modelName,
-        { dtype: "q4", device },
+        {
+          dtype: "q4",
+          device,
+          progress_callback: (() => {
+            const state = { encoder: 0, decoder: 0 };
+            return (progress) => {
+              if (progress.status === 'progress' && progress.file) {
+                state.encoder = progress.file.includes('encoder') 
+                  ? Math.round(progress.progress || 0) 
+                  : state.encoder;
+                state.decoder = progress.file.includes('decoder') 
+                  ? Math.round(progress.progress || 0) 
+                  : state.decoder;
+                // Tampilkan progress via UI
+                if (this.ui && typeof this.ui.showStatus === 'function') {
+                  this.ui.showStatus(`Mengunduh model AI...\nEncoder: ${state.encoder}% | Decoder: ${state.decoder}%`);
+                }
+              }
+            };
+          })(),
+        },
       );
       
       this.isModelLoaded = true;
@@ -63,6 +84,24 @@ class NutritionService {
       const startTime = performance.now();
 
       await createDelay(this.config.generationDelay);
+
+      const MAX_LENGTH = 30;
+
+      // Sanitize: Hapus karakter-karakter yang sering digunakan untuk prompt injection
+      fruitName = fruitName
+          .replace(/[|]{2,}/g, '')          // Hapus ||| (separator injection)
+          .replace(/[#=]{2,}/g, '')         // Hapus ###, == (marker section)
+          .replace(/(--|\+\+|``)/g, '')     // Hapus --, ++, `` (marker kode)
+          .replace(/\n/g, ' ')              // Hapus newline
+          .trim();
+
+      // Validasi setelah sanitasi
+      if (!fruitName || fruitName.length > MAX_LENGTH) {
+          this.ui.showError(`Nama buah harus 1-${MAX_LENGTH} karakter.`);
+          this.ui.enableAllInputs();
+          this.isGenerating = false;
+          return;
+      }
 
       const prompt = `Write a simple nutrition fact about ${fruitName}. Include key nutritional benefits in 1-2 sentences.`;
 
