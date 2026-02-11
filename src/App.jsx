@@ -30,7 +30,10 @@ function App() {
 
         let generator = null;
         try {
-          generator = new NutritionService();
+          // Callback untuk update progress download model
+          generator = new NutritionService((progress) => {
+            actions.setModelStatus(progress.message);
+          });
           await generator.loadModel();
         } catch (error) {
           console.warn('⚠️ Layanan nutrisi gagal dimuat (mode offline?)', error);
