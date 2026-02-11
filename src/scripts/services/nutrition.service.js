@@ -2,19 +2,46 @@ import { pipeline } from '@huggingface/transformers';
 import { TRANSFORMERS_CONFIG, createDelay, isWebGPUSupported, logError } from '../utils/index.js';
 
 class NutritionService {
-  constructor() {
+  constructor(onProgress = null) {
     this.generator = null;
     this.isModelLoaded = false;
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
+    this.onProgress = onProgress; // Callback untuk update progress di React state
   }
 
   async loadModel() {
     try {
       const device = isWebGPUSupported() ? 'webgpu' : 'wasm';
 
-      this.generator = await pipeline('text2text-generation', this.config.modelName, { dtype: "q4", device });
+      this.generator = await pipeline('text2text-generation', this.config.modelName, {
+        dtype: "q4",
+        device,
+        progress_callback: (() => {
+          const state = { encoder: 0, decoder: 0 };
+          return (progress) => {
+            if (progress.status === 'progress' && progress.file) {
+              state.encoder = progress.file.includes('encoder') 
+                ? Math.round(progress.progress || 0) 
+                : state.encoder;
+              state.decoder = progress.file.includes('decoder') 
+                ? Math.round(progress.progress || 0) 
+                : state.decoder;
+              
+              // Panggil callback jika ada
+              if (this.onProgress && typeof this.onProgress === 'function') {
+                this.onProgress({
+                  status: 'downloading',
+                  encoder: state.encoder,
+                  decoder: state.decoder,
+                  message: `Mengunduh model AI... Encoder: ${state.encoder}% | Decoder: ${state.decoder}%`
+                });
+              }
+            }
+          };
+        })(),
+      });
 
       await createDelay(1000);
 

@@ -14,7 +14,11 @@ export default class HomePresenter {
     this.#view = view;
     this.#cameraService = new CameraService();
     this.#detectionService = new DetectionService();
-    this.#nutritionService = new NutritionService();
+    
+    // Callback untuk update progress download model
+    this.#nutritionService = new NutritionService((progress) => {
+      this.#view.showStatus(progress.message);
+    });
   }
 
   async initialApp() {
