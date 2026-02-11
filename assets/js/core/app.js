@@ -58,7 +58,7 @@ class NutriApp {
 
       this.camera = new CameraService();
 
-      this.generator = new NutritionService();
+      this.generator = new NutritionService(this.ui);
 
       try {
           await this.generator.loadModel();
