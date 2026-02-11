@@ -14,7 +14,6 @@ function CameraSection({
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Set video and canvas elements on camera service when refs become available
   useEffect(() => {
     if (services.camera) {
       if (videoRef.current && !services.camera.video) {
@@ -47,6 +46,9 @@ function CameraSection({
   const buttonText = isRunning ? 'Stop Scan' : 'Mulai Scan';
   const buttonClass = isRunning ? 'btn btn-stop' : 'btn btn-start';
   const buttonDisabled = !isModelReady;
+  const displayButtonText = buttonDisabled && !isModelReady 
+    ? 'Memuat Model...' 
+    : buttonText;
 
   return (
     <section className="camera-card" aria-label="Camera Feed and Controls">
@@ -97,9 +99,9 @@ function CameraSection({
           className={buttonClass}
           onClick={onToggleCamera}
           disabled={buttonDisabled}
-          aria-label={buttonText}
+          aria-label={displayButtonText}
         >
-          <span>{buttonDisabled ? modelStatus : buttonText}</span>
+          <span>{displayButtonText}</span>
         </button>
 
         <div className="settings-group">
