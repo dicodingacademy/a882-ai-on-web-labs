@@ -90,6 +90,24 @@ class PoemGenerator {
 	*/
 	async generatePoem(theme) {
 		try {
+			const MAX_THEME_LENGTH = 30;
+
+			// Sanitize: Hapus karakter-karakter yang sering digunakan untuk prompt injection
+			theme = theme
+				.replace(/[|]{2,}/g, '')          // Hapus ||| (separator injection)
+				.replace(/[#=]{2,}/g, '')         // Hapus ###, == (marker section)
+				.replace(/(--|\+\+|``)/g, '')     // Hapus --, ++, `` (marker kode)
+				.replace(/\n/g, ' ')              // Hapus newline
+				.trim();
+
+			// Validasi setelah sanitasi
+			if (!theme || theme.length > MAX_THEME_LENGTH) {
+				this.showError(`Tema harus 1-${MAX_THEME_LENGTH} karakter.`);
+				this.enableInput();
+				this.isGenerating = false;
+				return;
+			}
+			
 			const prompt = `Write a beautiful poem about ${theme}. Make it creative and expressive.`;
 
 			const result = await this.generator(prompt, {
