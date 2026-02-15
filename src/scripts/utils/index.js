@@ -125,6 +125,16 @@ export const getCameraErrorMessage = (error) => {
   return 'Gagal memulai kamera';
 };
 
+/**
+ * @review
+ * Fungsi DOM helper di bawah ini (addFadeInAnimation, addScaleAnimation,
+ * hideElement, showElement, setElementOpacity, setElementText, setElementHTML)
+ * tidak digunakan di mana pun dalam codebase.
+ *
+ * Pilihan:
+ * 1. Hapus semua helper yang tidak dipakai, atau
+ * 2. Refactor home-page.js agar menggunakan helper ini.
+ */
 export const addFadeInAnimation = (element) => {
   if (!element) return;
 
