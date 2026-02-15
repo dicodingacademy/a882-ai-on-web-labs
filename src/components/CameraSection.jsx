@@ -36,6 +36,24 @@ function CameraSection({
     }
   }, [fps, services.camera]);
 
+  /**
+   * @review
+   * Ada dua masalah dengan camera selector ini:
+   *
+   * 1. services.camera.startCamera() dipanggil tanpa argumen.
+   *    Padahal method startCamera(selectedCameraId) di CameraService
+   *    menerima parameter deviceId. Tanpa argumen, kamera yang sama
+   *    akan digunakan terus, jadi mengganti pilihan di dropdown tidak ada efeknya.
+   *
+   * 2. Nilai dropdown ('default', 'front', 'ext') diberkas ini adalah string hardcode
+   *    yang tidak berhubungan dengan deviceId asli dari enumerateDevices().
+   *
+   *    Di sisi lain, CameraService.loadCameras() sudah bisa mengembalikan daftar kamera
+   *    dengan deviceId yang sebenarnya, tapi tidak dimanfaatkan.
+   *
+   * Saran: silakan panggil loadCameras() saat init, populate dropdown dengan deviceId asli,
+   * lalu pass deviceId ke startCamera(selectedCameraId).
+   */
   const handleCameraChange = (newCameraType) => {
     setCameraType(newCameraType);
     if (services.camera && services.camera.isActive()) {
