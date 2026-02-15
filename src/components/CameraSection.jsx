@@ -69,8 +69,18 @@ function CameraSection({
   const buttonText = isRunning ? 'Stop Scan' : 'Mulai Scan';
   const buttonClass = isRunning ? 'btn btn-stop' : 'btn btn-start';
   const buttonDisabled = !isModelReady;
-  const displayButtonText = buttonDisabled && !isModelReady 
-    ? 'Memuat Model...' 
+  /**
+   * @review
+   * Kondisi `buttonDisabled && !isModelReady` itu redundan.
+   *
+   * `buttonDisabled` sendiri sudah didefinisikan sebagai `!isModelReady` di baris atas.
+   * Jadi `buttonDisabled && !isModelReady` sama saja dengan `!isModelReady && !isModelReady`,
+   * yang secara logis identik dengan `!isModelReady`.
+   *
+   * Cukup: `const displayButtonText = !isModelReady ? 'Memuat Model...' : buttonText;`
+   */
+  const displayButtonText = buttonDisabled && !isModelReady
+    ? 'Memuat Model...'
     : buttonText;
 
   return (
