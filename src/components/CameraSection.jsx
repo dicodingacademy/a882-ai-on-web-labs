@@ -14,6 +14,11 @@ function CameraSection({
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
+  /**
+   * @review
+   * Sebaiknya tambahkan dependency array [services.camera]
+   * agar effect hanya jalan ketika camera service berubah.
+   */
   useEffect(() => {
     if (services.camera) {
       if (videoRef.current && !services.camera.video) {
