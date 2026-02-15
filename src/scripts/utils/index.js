@@ -74,6 +74,16 @@ export const validateModelMetadata = (metadata) => {
   return metadata && metadata.labels && Array.isArray(metadata.labels);
 };
 
+/**
+ * @review
+ * Tiga fungsi helper confidence di bawah ini (getConfidenceTheme, getConfidenceTextClass,
+ * getConfidenceCardClass) tidak digunakan di codebase.
+ *
+ * Di home-page.js (showResultState & showResultsWithNullNutrition),
+ * logika yang sama justru ditulis ulang secara hardcode.
+ * Sebaiknya home-page.js menggunakan fungsi-fungsi ini untuk menghilangkan duplikasi
+ * dan hardcode.
+ */
 export const getConfidenceTheme = (confidence) => {
   const { excellent, good } = UI_CONFIG.confidenceThresholds;
   if (confidence >= excellent) return 'green';
