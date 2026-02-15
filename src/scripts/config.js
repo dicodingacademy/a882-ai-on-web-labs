@@ -43,6 +43,14 @@ const CAMERA_CONFIG = {
   mobileFacingMode: 'environment',
 };
 
+/**
+ * @review
+ * ENDPOINTS ini tidak digunakan di mana pun dalam codebase.
+ * NutritionService menggunakan pipeline dari @huggingface/transformers yang berjalan lokal,
+ * tidak memanggil API endpoint.
+ *
+ * Dead code seperti ini bisa membingungkan siswa dan sebaiknya dihapus.
+ */
 const ENDPOINTS = {
   NUTRITION_API: 'https://api.example.com/nutrition',
 };
