@@ -128,6 +128,10 @@ export default class HomePresenter {
         this.#stopDetectionLoop();
         this.#view.showAnalyzingState();
 
+        /**
+         * @review
+         * Sebaiknya gunakan createDelay dari config agar konsisten
+         */
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         this.stopCamera();
