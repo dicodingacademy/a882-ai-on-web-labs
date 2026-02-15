@@ -25,6 +25,10 @@ const ActionTypes = {
   RESET_RESULTS: 'RESET_RESULTS',
 };
 
+/**
+ * @review
+ * Indentasi `switch` dan `case` di sini perlu diperbaiki.
+ */
 function appReducer(state, action) {
   switch (action.type) {
   case ActionTypes.SET_MODEL_STATUS:
