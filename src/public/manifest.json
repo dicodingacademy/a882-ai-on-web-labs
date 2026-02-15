@@ -6,6 +6,7 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#27ae60",
+  "_review": "@review: theme_color di sini (#27ae60) berbeda dengan yang ada di index.html meta tag dan CSS :root, keduanya menggunakan #16a34a.",
   "orientation": "portrait-primary",
   "icons": [
     {
