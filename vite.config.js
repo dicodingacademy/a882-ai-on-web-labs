@@ -19,6 +19,8 @@ export default defineConfig({
         name: 'NutriVision - AI Food Recognition',
         short_name: 'NutriVision',
         description: 'Aplikasi AI untuk mengenali makanan dan memberikan informasi nutrisi',
+        // @review
+        // theme_color di sini (#27ae60) berbeda dengan --primary di index.css (#16a34a).
         theme_color: '#27ae60',
         background_color: '#ffffff',
         display: 'standalone',
