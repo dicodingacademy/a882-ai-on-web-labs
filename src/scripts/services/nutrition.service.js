@@ -8,6 +8,12 @@ class NutritionService {
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
+    /**
+     * @review
+     * Komentar ini menyebut "React state", padahal aplikasi ini vanilla JS dengan pattern MVP.
+     * Komentar yang menyesatkan bisa membingungkan siswa, terutama yang sedang belajar
+     * membedakan antara framework (React) dan vanilla JS.
+     */
     this.onProgress = onProgress; // Callback untuk update progress di React state
   }
 
