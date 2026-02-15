@@ -57,6 +57,19 @@ const ENDPOINTS = {
 
 export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG, ENDPOINTS };
 
+/**
+ * @review
+ * File ini mengekspor dengan dua cara: named export (baris atas) DAN default export (baris bawah).
+ * Ini redundan dan membingungkan karena konsumen bisa import dengan dua cara berbeda
+ * untuk mendapatkan hal yang sama:
+ *
+ *   import { APP_CONFIG } from '../config.js';       // named
+ *   import config from '../config.js';               // default
+ *   config.APP_CONFIG                                // sama saja
+ *
+ * Di codebase ini, semua file menggunakan named import.
+ * Jadi default export tidak terpakai dan sebaiknya dihapus untuk menghindari ambiguitas.
+ */
 export default {
   APP_CONFIG,
   TENSORFLOW_CONFIG,
