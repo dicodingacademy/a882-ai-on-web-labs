@@ -30,6 +30,11 @@ export const getCameraConfig = () => {
 
 export const createDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * @review
+ * sleep() sendiri tidak digunakan di mana pun dalam codebase (hanya createDelay yang dipakai).
+ * Sebaiknya dihapus untuk menghindari kebingungan "pakai yang mana?"
+ */
 export const sleep = (time = 1000) => {
   return new Promise((resolve) => setTimeout(resolve, time));
 };
