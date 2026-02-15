@@ -53,6 +53,18 @@ export function showFormattedDate(date, locale = 'en-US', options = {}) {
   });
 }
 
+/**
+ * @review
+ * Fungsi ini juga tidak digunakan di mana pun.
+ * Di home-presenter.js, validasi deteksi dilakukan langsung
+ * dengan `result.isValid` (yang sudah dihitung di DetectionService.predict()).
+ *
+ * Selain itu, ada inkonsistensi threshold:
+ * - Di sini menggunakan APP_CONFIG.detectionConfidenceThreshold (70)
+ * - Di DetectionService, isValid dihitung dari TENSORFLOW_CONFIG.confidenceThreshold (0.7 * 100 = 70)
+ *
+ * Dua sumber kebenaran untuk satu hal yang sama. Sebaiknya dipilih satu.
+ */
 export const isValidDetection = (result) => {
   const { detectionConfidenceThreshold } = APP_CONFIG;
   return result && result.isValid && result.confidence >= detectionConfidenceThreshold;
