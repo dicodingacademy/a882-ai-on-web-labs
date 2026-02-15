@@ -86,6 +86,19 @@ export default class HomePage {
     if (statusTextCamera) statusTextCamera.textContent = 'OFFLINE';
   }
 
+  /**
+   * @review
+   * Method ini mengakses element #status-text yang ada di header (index.html),
+   * bukan di dalam template yang di-render oleh HomePage sendiri.
+   *
+   * Dalam pattern MVP, View seharusnya hanya mengelola DOM yang menjadi
+   * tanggung jawabnya (yaitu yang dihasilkan dari render()).
+   * Memanipulasi element di luar scope-nya membuat coupling tersembunyi
+   * antara HomePage dan layout global.
+   *
+   * Alternatif: buat komponen header terpisah yang mengelola status-text,
+   * atau pindahkan tanggung jawab update status ke App-level.
+   */
   showStatus(message) {
     const statusText = document.getElementById('status-text');
     if (statusText) {
