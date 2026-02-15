@@ -6,6 +6,12 @@ import {
   TRANSFORMERS_CONFIG,
 } from '../config.js';
 
+/**
+ * @review
+ * Mengapa di sini melakukan re-eksport nilai-nilai dari config ya?
+ * Hal ini tentu buat siswa bingung nantinya.
+ * Saranku, gek perlu re-eksport. Kalo mau pake, langsung import aja dari config.js.
+ */
 export { APP_CONFIG, UI_CONFIG, CAMERA_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG };
 
 export const isMobileDevice = () => {
