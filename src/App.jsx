@@ -76,6 +76,27 @@ function App() {
     let isActive = true;
 
     const detectLoop = async () => {
+      /**
+       * @review
+       * Ada dead code di sini.
+       *
+       * Kondisi luar: `!isActive || !isRunningRef.current`
+       *   → artinya minimal salah satu bernilai false.
+       *
+       * Kondisi dalam: `isActive && isRunningRef.current`
+       *   → artinya KEDUANYA harus true.
+       *
+       * Jika sudah masuk blok luar (minimal satu false),
+       * maka kondisi dalam (keduanya true) TIDAK MUNGKIN tercapai.
+       * Blok setTimeout di dalamnya tidak akan pernah dieksekusi.
+       *
+       * Kemungkinan yang dimaksud adalah:
+       *   if (!isActive) return;           // benar-benar berhenti
+       *   if (!isRunningRef.current) {     // belum siap, tapi retry
+       *     setTimeout(() => { ... }, retryInterval);
+       *     return;
+       *   }
+       */
       if (!isActive || !isRunningRef.current) {
         if (isActive && isRunningRef.current) {
           setTimeout(() => {
