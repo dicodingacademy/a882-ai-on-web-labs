@@ -39,6 +39,11 @@ export const sleep = (time = 1000) => {
   return new Promise((resolve) => setTimeout(resolve, time));
 };
 
+/**
+ * @review
+ * Fungsi showFormattedDate() tidak digunakan di mana pun dalam codebase.
+ * Aplikasi ini tidak menampilkan tanggal sama sekali.
+ */
 export function showFormattedDate(date, locale = 'en-US', options = {}) {
   return new Date(date).toLocaleDateString(locale, {
     year: 'numeric',
