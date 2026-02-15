@@ -56,6 +56,10 @@ export default class HomePage {
   hideCameraLoading() {
     const toggleBtn = document.getElementById('btn-toggle');
     const btnText = document.getElementById('btn-text');
+    /**
+    * @review
+    * bukan kah seharusnya if (toggleBtn && toggleBtn.disable) ? karena aku lihat kode ini untuk enable button yang disable?
+    */
     if (toggleBtn && !toggleBtn.disabled) {
       toggleBtn.disabled = false;
     }
