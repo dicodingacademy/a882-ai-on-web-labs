@@ -176,6 +176,22 @@ function App() {
 
       await state.services.camera?.startCamera();
 
+      /**
+       * @review
+       * Menggunakan document.querySelector('video') dan document.querySelector('canvas')
+       * untuk mendapatkan elemen DOM adalah anti-pattern di React.
+       *
+       * React menyediakan useRef untuk mengakses DOM secara deklaratif.
+       * Di CameraSection.jsx sendiri sudah ada videoRef dan canvasRef.
+       *
+       * Masalah dengan querySelector:
+       * 1. Jika ada lebih dari satu <video> atau <canvas> di halaman, akan ambil yang salah.
+       * 2. Bergantung pada timing render DOM, bukan lifecycle React.
+       * 3. Bypass React's declarative model.
+       *
+       * Sebaiknya, angkat ref ke App.jsx atau gunakan callback ref
+       * yang diteruskan dari parent ke child, lalu pass ke CameraService.
+       */
       if (state.services.camera) {
         const videoEl = document.querySelector('video');
         const canvasEl = document.querySelector('canvas');
