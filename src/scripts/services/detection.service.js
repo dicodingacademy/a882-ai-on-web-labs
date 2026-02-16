@@ -1,11 +1,11 @@
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgpu';
 import {
-  TENSORFLOW_CONFIG,
   validateModelMetadata,
   isWebGPUSupported,
   logError,
 } from '../utils/index.js';
+import { TENSORFLOW_CONFIG } from '../config.js';
 
 class DetectionService {
   constructor() {

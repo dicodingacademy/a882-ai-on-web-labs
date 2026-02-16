@@ -28,16 +28,6 @@ export const validateModelMetadata = (metadata) => {
   return metadata && metadata.labels && Array.isArray(metadata.labels);
 };
 
-/**
- * @review
- * Tiga fungsi helper confidence di bawah ini (getConfidenceTheme, getConfidenceTextClass,
- * getConfidenceCardClass) tidak digunakan di codebase.
- *
- * Di home-page.js (showResultState & showResultsWithNullNutrition),
- * logika yang sama justru ditulis ulang secara hardcode.
- * Sebaiknya home-page.js menggunakan fungsi-fungsi ini untuk menghilangkan duplikasi
- * dan hardcode.
- */
 export const getConfidenceTheme = (confidence) => {
   const { excellent, good } = UI_CONFIG.confidenceThresholds;
   if (confidence >= excellent) return 'green';
@@ -79,16 +69,6 @@ export const getCameraErrorMessage = (error) => {
   return 'Gagal memulai kamera';
 };
 
-/**
- * @review
- * Fungsi DOM helper di bawah ini (addFadeInAnimation, addScaleAnimation,
- * hideElement, showElement, setElementOpacity, setElementText, setElementHTML)
- * tidak digunakan di mana pun dalam codebase.
- *
- * Pilihan:
- * 1. Hapus semua helper yang tidak dipakai, atau
- * 2. Refactor home-page.js agar menggunakan helper ini.
- */
 export const addFadeInAnimation = (element) => {
   if (!element) return;
 
@@ -121,6 +101,14 @@ export const hideElement = (element) => {
 
 export const showElement = (element) => {
   if (element) element.classList.remove('hidden');
+};
+
+export const setElementDisplay = (element, value) => {
+  if (element) element.style.display = value;
+};
+
+export const setElementStyle = (element, property, value) => {
+  if (element) element.style[property] = value;
 };
 
 export const setElementOpacity = (element, opacity) => {

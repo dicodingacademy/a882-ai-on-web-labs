@@ -1,6 +1,6 @@
 import { pipeline } from '@huggingface/transformers';
 import { APP_CONFIG, TRANSFORMERS_CONFIG } from '../config.js';
-import { createDelay, isWebGPUSupported } from '../utils/index.js';
+import { createDelay, isWebGPUSupported, logError } from '../utils/index.js';
 
 class NutritionService {
   constructor(onProgress = null) {
@@ -55,31 +55,10 @@ class NutritionService {
         backend: this.currentBackend,
       };
     } catch (error) {
-      /**
-       * @review
-       * loadModel() menangkap error dan mengembalikan { success: false } alih-alih throw.
-       *
-       * Masalahnya: mehtod ini dipanggil di HomePresenter.initialApp() dan dibungkus dengan try-catch,
-       * secara tidak langsung, mengharapkan error di-throw supaya bisa ditangani di catch block.
-       *
-       * Karena error di-swallow di sini, maka flow di presenter akan terus jalan,
-       * dan sampai ke `this.#view.showStatus('Model AI Siap')` meskipun model
-       * nutrisi GAGAL dimuat. Ini silent failure.
-       *
-       * Pola yang digunakan DetectionService (throw error) lebih konsisten
-       * dan lebih aman. Aku sarankan loadModel() di sini juga throw error
-       * agar presenter bisa menangani kegagalan dengan benar.
-       */
       logError('Kesalahan memuat model Transformers.js', error);
 
       this.isModelLoaded = false;
-
-      return {
-        success: false,
-        model: this.config.modelName,
-        backend: null,
-        error: error.message,
-      };
+      throw new Error(`Gagal memuat model: ${error.message}`);
     }
   }
 

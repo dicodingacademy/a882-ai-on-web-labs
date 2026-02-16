@@ -2,7 +2,7 @@ import { APP_CONFIG } from '../../config.js';
 import CameraService from '../../services/camera.service.js';
 import DetectionService from '../../services/detection.service.js';
 import NutritionService from '../../services/nutrition.service.js';
-import { isValidDetection } from '../../utils/index.js';
+import { createDelay, isValidDetection } from '../../utils/index.js';
 
 export default class HomePresenter {
   #view;
