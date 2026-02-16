@@ -1,5 +1,4 @@
 const APP_CONFIG = {
-  detectionConfidenceThreshold: 70,
   analyzingDelay: 2000,
   nutritionGenerationDelay: 2000,
   detectionRetryInterval: 100,
@@ -10,7 +9,7 @@ const TENSORFLOW_CONFIG = {
   metadataPath: '../model/metadata.json',
   inputSize: [224, 224],
   normalizationFactor: 255.0,
-  confidenceThreshold: 0.7,
+  confidenceThreshold: 70,
 };
 
 const TRANSFORMERS_CONFIG = {
@@ -43,38 +42,4 @@ const CAMERA_CONFIG = {
   mobileFacingMode: 'environment',
 };
 
-/**
- * @review
- * ENDPOINTS ini tidak digunakan di mana pun dalam codebase.
- * NutritionService menggunakan pipeline dari @huggingface/transformers yang berjalan lokal,
- * tidak memanggil API endpoint.
- *
- * Dead code seperti ini bisa membingungkan siswa dan sebaiknya dihapus.
- */
-const ENDPOINTS = {
-  NUTRITION_API: 'https://api.example.com/nutrition',
-};
-
 export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG, ENDPOINTS };
-
-/**
- * @review
- * File ini mengekspor dengan dua cara: named export (baris atas) DAN default export (baris bawah).
- * Ini redundan dan membingungkan karena konsumen bisa import dengan dua cara berbeda
- * untuk mendapatkan hal yang sama:
- *
- *   import { APP_CONFIG } from '../config.js';       // named
- *   import config from '../config.js';               // default
- *   config.APP_CONFIG                                // sama saja
- *
- * Di codebase ini, semua file menggunakan named import.
- * Jadi default export tidak terpakai dan sebaiknya dihapus untuk menghindari ambiguitas.
- */
-export default {
-  APP_CONFIG,
-  TENSORFLOW_CONFIG,
-  TRANSFORMERS_CONFIG,
-  UI_CONFIG,
-  CAMERA_CONFIG,
-  ENDPOINTS,
-};
