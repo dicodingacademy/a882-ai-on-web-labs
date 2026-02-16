@@ -10,7 +10,10 @@ export const TENSORFLOW_CONFIG = {
   metadataPath: '/model/metadata.json',
   inputSize: [224, 224],
   normalizationFactor: 255.0,
-  confidenceThreshold: 0.7,
+  confidenceThresholds: {
+    excellent: 70,
+    good: 50
+  }
 };
 
 export const TRANSFORMERS_CONFIG = {
@@ -21,34 +24,6 @@ export const TRANSFORMERS_CONFIG = {
   generationDelay: 500,
 };
 
-/**
- * @review
- * UI_CONFIG dan CAMERA_CONFIG diekspor di sini tapi tidak di-import di mana pun.
- *
- * - UI_CONFIG.confidenceThresholds: tidak dipakai oleh ui.js (yang justru hardcode threshold sendiri)
- * - UI_CONFIG.animationDuration, fadeAnimation, nutritionCardOpacity: tidak dipakai sama sekali
- * - CAMERA_CONFIG: tidak dipakai. common.js punya getCameraConfig() yang hardcode nilai yang sama
- *
- * Ini dead code. Keberadaannya menyesatkan karena memberi kesan bahwa
- * ada satu sumber konfigurasi yang terpusat, padahal kenyataannya
- * masing-masing file mendefinisikan nilainya sendiri.
- *
- * Sebaiknya: hapus yang tidak dipakai, atau refactor agar common.js dan ui.js
- * benar-benar import dan gunakan nilai dari config ini.
- */
-export const UI_CONFIG = {
-  animationDuration: 300,
-  fadeAnimation: 'fadeIn 0.5s ease-out forwards',
-  confidenceThresholds: {
-    excellent: 90,
-    good: 80
-  },
-  nutritionCardOpacity: {
-    loading: 0.6,
-    normal: 1.0
-  }
-};
-
 export const CAMERA_CONFIG = {
   defaultFPS: 30,
   fpsRange: { min: 15, max: 60 },
@@ -56,22 +31,4 @@ export const CAMERA_CONFIG = {
   mobileResolution: { width: 480, height: 640 },
   desktopFacingMode: 'user',
   mobileFacingMode: 'environment'
-};
-
-/**
- * @review
- * Fungsi validasi ditempatkan di file config.
- * Secara konvensi, config seharusnya hanya berisi konstanta/konfigurasi,
- * bukan logic. Fungsi ini lebih cocok di common.js atau file utils terpisah.
- *
- * Selain itu, ada redundansi validasi:
- * - Di sini: result.confidence >= detectionConfidenceThreshold (70)
- * - Di DetectionService.predict(): isValid = confidence >= confidenceThreshold * 100 (70)
- *
- * Dua tempat menghitung "apakah deteksi valid?" dengan threshold yang sama
- * dari sumber yang berbeda. Jika salah satu diubah, yang lain bisa jadi inkonsisten.
- */
-export const isValidDetection = (result) => {
-  const { detectionConfidenceThreshold } = APP_CONFIG;
-  return result && result.isValid && result.confidence >= detectionConfidenceThreshold;
 };

@@ -5,8 +5,8 @@ import InfoPanel from './components/InfoPanel';
 import { DetectionService } from './services/DetectionService';
 import { CameraService } from './services/CameraService';
 import { NutritionService } from './services/NutritionService';
-import { APP_CONFIG, isValidDetection } from './utils/config';
-import { createDelay } from './utils/common';
+import { APP_CONFIG } from './utils/config';
+import { createDelay, isValidDetection } from './utils/common';
 import { commonStyles } from './utils/ui';
 import { useAppState } from './hooks/useAppState';
 

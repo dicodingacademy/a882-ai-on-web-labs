@@ -1,3 +1,5 @@
+import { TENSORFLOW_CONFIG } from './config.js';
+
 export const commonStyles = {
   errorContainer: {
     marginTop: '1rem',
@@ -50,32 +52,17 @@ export const commonStyles = {
   }
 };
 
-/**
- * @review
- * Threshold di sini (80 dan 60) tidak sesuai dengan yang didefinisikan
- * di UI_CONFIG.confidenceThresholds (excellent: 90, good: 80).
- *
- * Artinya ada dua sumber kebenaran yang saling bertentangan:
- * - config.js bilang: >= 90 excellent, >= 80 good
- * - ui.js bilang: >= 80 green, >= 60 yellow
- *
- * Siswa akan bingung mana yang benar.
- *
- * Selain itu, UI_CONFIG sendiri diekspor dari config.js tapi tidak di-import
- * di mana pun dalam codebase. Jadi definisi threshold di config itu dead code.
- *
- * Sebaiknya: import UI_CONFIG di sini dan gunakan nilainya,
- * atau hapus UI_CONFIG.confidenceThresholds kalau memang tidak dipakai.
- */
 export const getConfidenceTheme = (confidence) => {
-  if (confidence >= 80) return 'theme-green';
-  if (confidence >= 60) return 'theme-yellow';
+  const { excellent, good } = TENSORFLOW_CONFIG.confidenceThresholds;
+  if (confidence >= excellent) return 'theme-green';
+  if (confidence >= good) return 'theme-yellow';
   return 'theme-red';
 };
 
 export const getConfidenceTextClass = (confidence) => {
-  if (confidence >= 80) return 'text-green';
-  if (confidence >= 60) return 'text-yellow';
+  const { excellent, good } = TENSORFLOW_CONFIG.confidenceThresholds;
+  if (confidence >= excellent) return 'text-green';
+  if (confidence >= good) return 'text-yellow';
   return 'text-red';
 };
 

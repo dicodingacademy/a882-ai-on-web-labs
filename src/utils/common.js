@@ -50,7 +50,12 @@ export const getCameraErrorMessage = (error) => {
   return errorMessages[error.name] || 'Gagal memulai kamera';
 };
 
-import { CAMERA_CONFIG } from './config.js';
+export const isValidDetection = (result) => {
+  const { excellent } = TENSORFLOW_CONFIG.confidenceThresholds;
+  return result && result.isValid && result.confidence >= excellent;
+};
+
+import { CAMERA_CONFIG, TENSORFLOW_CONFIG } from './config.js';
 
 export const getCameraConfig = () => {
   const mobile = isMobileDevice();
