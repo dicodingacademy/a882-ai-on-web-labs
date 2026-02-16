@@ -6,25 +6,33 @@ import { createDelay, isValidDetection } from '../../utils/index.js';
 
 export default class HomePresenter {
   #view;
+  #headerPresenter;
   #cameraService;
   #detectionService;
   #nutritionService;
   #timer = null;
   #currentLoopId = null;
 
-  constructor({ view }) {
+  constructor({ view, headerPresenter }) {
     this.#view = view;
+    this.#headerPresenter = headerPresenter;
     this.#cameraService = new CameraService();
     this.#detectionService = new DetectionService();
     
     // Callback untuk update progress download model
     this.#nutritionService = new NutritionService((progress) => {
-      this.#view.showStatus(progress.message);
+      this.#updateStatus(progress.message);
     });
   }
 
+  #updateStatus(message) {
+    if (this.#headerPresenter) {
+      this.#headerPresenter.updateStatus(message);
+    }
+  }
+
   async initialApp() {
-    this.#view.showStatus('Memuat model AI...');
+    this.#updateStatus('Memuat model AI...');
     this.#view.showCameraLoading();
     try {
       await this.#cameraService.loadCameras(this.#view.getCameraSelectElement());
@@ -32,12 +40,12 @@ export default class HomePresenter {
 
       await this.#nutritionService.loadModel();
 
-      this.#view.showStatus('Model AI Siap');
+      this.#updateStatus('Model AI Siap');
       this.#view.hideCameraLoading();
       this.#view.enableToggleButton();
     } catch (error) {
       console.error('initialApp: error:', error);
-      this.#view.showStatus('Model gagal dimuat');
+      this.#updateStatus('Model gagal dimuat');
       this.#view.hideCameraLoading();
       this.#view.showError(error.message);
     }

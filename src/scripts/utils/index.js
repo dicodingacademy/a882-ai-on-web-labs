@@ -95,24 +95,12 @@ export const addScaleAnimation = (element, callback) => {
   }, animationDuration);
 };
 
-export const hideElement = (element) => {
-  if (element) element.classList.add('hidden');
-};
-
-export const showElement = (element) => {
-  if (element) element.classList.remove('hidden');
-};
-
 export const setElementDisplay = (element, value) => {
   if (element) element.style.display = value;
 };
 
 export const setElementStyle = (element, property, value) => {
   if (element) element.style[property] = value;
-};
-
-export const setElementOpacity = (element, opacity) => {
-  if (element) element.style.opacity = opacity;
 };
 
 export const setElementText = (element, text) => {

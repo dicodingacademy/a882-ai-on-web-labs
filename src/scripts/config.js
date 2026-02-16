@@ -1,7 +1,6 @@
 const APP_CONFIG = {
   analyzingDelay: 2000,
   nutritionGenerationDelay: 1000,
-  detectionRetryInterval: 100,
   generationDelay: 500,
 };
 
@@ -26,10 +25,6 @@ const UI_CONFIG = {
   confidenceThresholds: {
     excellent: 90,
     good: 80,
-  },
-  nutritionCardOpacity: {
-    loading: 0.6,
-    normal: 1.0,
   },
 };
 

@@ -13,6 +13,11 @@ import HomePresenter from './home-presenter.js';
 
 export default class HomePage {
   #presenter = null;
+  #headerPresenter = null;
+
+  constructor({ headerPresenter }) {
+    this.#headerPresenter = headerPresenter;
+  }
 
   async render() {
     return `
@@ -24,7 +29,7 @@ export default class HomePage {
   }
 
   async afterRender() {
-    this.#presenter = new HomePresenter({ view: this });
+    this.#presenter = new HomePresenter({ view: this, headerPresenter: this.#headerPresenter });
     await this.#presenter.initialApp();
     this.#bindEvents();
   }
@@ -64,11 +69,7 @@ export default class HomePage {
   hideCameraLoading() {
     const toggleBtn = document.getElementById('btn-toggle');
     const btnText = document.getElementById('btn-text');
-    /**
-    * @review
-    * bukan kah seharusnya if (toggleBtn && toggleBtn.disable) ? karena aku lihat kode ini untuk enable button yang disable?
-    */
-    if (toggleBtn && !toggleBtn.disabled) {
+    if (toggleBtn && toggleBtn.disabled) {
       toggleBtn.disabled = false;
     }
     setElementText(btnText, 'Mulai Scan');
@@ -96,22 +97,8 @@ export default class HomePage {
     setElementText(statusTextCamera, 'OFFLINE');
   }
 
-  /**
-   * @review
-   * Method ini mengakses element #status-text yang ada di header (index.html),
-   * bukan di dalam template yang di-render oleh HomePage sendiri.
-   *
-   * Dalam pattern MVP, View seharusnya hanya mengelola DOM yang menjadi
-   * tanggung jawabnya (yaitu yang dihasilkan dari render()).
-   * Memanipulasi element di luar scope-nya membuat coupling tersembunyi
-   * antara HomePage dan layout global.
-   *
-   * Alternatif: buat komponen header terpisah yang mengelola status-text,
-   * atau pindahkan tanggung jawab update status ke App-level.
-   */
   showStatus(message) {
-    const statusText = document.getElementById('status-text');
-    setElementText(statusText, message);
+    this.#headerPresenter?.updateStatus(message);
   }
 
   showCameraActive() {
