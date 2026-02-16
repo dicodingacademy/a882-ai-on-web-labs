@@ -95,7 +95,7 @@ class DetectionService {
       const maxIndex = values.indexOf(Math.max(...values));
       const confidence = Math.round(values[maxIndex] * 100);
       const className = this.labels[maxIndex];
-      const isValid = confidence >= this.config.confidenceThreshold * 100;
+      const isValid = confidence >= this.config.confidenceThreshold;
 
       return {
         className: className,

@@ -1,4 +1,5 @@
 import { generateCameraSection, generateInfoPanel } from '../../templates.js';
+import { getConfidenceTheme, getConfidenceTextClass, getConfidenceCardClass } from '../../utils/index.js';
 import HomePresenter from './home-presenter.js';
 
 export default class HomePage {
@@ -194,20 +195,11 @@ export default class HomePage {
 
     if (resultCard) {
       resultCard.classList.remove('theme-green', 'theme-yellow', 'theme-red');
+      resultCard.classList.add(getConfidenceCardClass(confidence));
     }
     if (resConfidence) {
       resConfidence.classList.remove('text-green', 'text-yellow', 'text-red');
-    }
-
-    if (confidence >= 90) {
-      if (resultCard) resultCard.classList.add('theme-green');
-      if (resConfidence) resConfidence.classList.add('text-green');
-    } else if (confidence >= 80) {
-      if (resultCard) resultCard.classList.add('theme-yellow');
-      if (resConfidence) resConfidence.classList.add('text-yellow');
-    } else {
-      if (resultCard) resultCard.classList.add('theme-red');
-      if (resConfidence) resConfidence.classList.add('text-red');
+      resConfidence.classList.add(getConfidenceTextClass(confidence));
     }
   }
 
@@ -225,20 +217,11 @@ export default class HomePage {
 
     if (resultCard) {
       resultCard.classList.remove('theme-green', 'theme-yellow', 'theme-red');
+      resultCard.classList.add(getConfidenceCardClass(confidence));
     }
     if (resConfidence) {
       resConfidence.classList.remove('text-green', 'text-yellow', 'text-red');
-    }
-
-    if (confidence >= 90) {
-      if (resultCard) resultCard.classList.add('theme-green');
-      if (resConfidence) resConfidence.classList.add('text-green');
-    } else if (confidence >= 80) {
-      if (resultCard) resultCard.classList.add('theme-yellow');
-      if (resConfidence) resConfidence.classList.add('text-yellow');
-    } else {
-      if (resultCard) resultCard.classList.add('theme-red');
-      if (resConfidence) resConfidence.classList.add('text-red');
+      resConfidence.classList.add(getConfidenceTextClass(confidence));
     }
 
     this.showResultState(className, confidence);

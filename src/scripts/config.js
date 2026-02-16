@@ -1,7 +1,8 @@
 const APP_CONFIG = {
   analyzingDelay: 2000,
-  nutritionGenerationDelay: 2000,
+  nutritionGenerationDelay: 1000,
   detectionRetryInterval: 100,
+  generationDelay: 500,
 };
 
 const TENSORFLOW_CONFIG = {
@@ -17,7 +18,6 @@ const TRANSFORMERS_CONFIG = {
   maxTokens: 80,
   temperature: 0.3,
   topP: 0.8,
-  generationDelay: 500,
 };
 
 const UI_CONFIG = {
@@ -42,4 +42,4 @@ const CAMERA_CONFIG = {
   mobileFacingMode: 'environment',
 };
 
-export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG, ENDPOINTS };
+export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG };

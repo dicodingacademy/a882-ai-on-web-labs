@@ -1,5 +1,6 @@
 import { pipeline } from '@huggingface/transformers';
-import { TRANSFORMERS_CONFIG, createDelay, isWebGPUSupported, logError } from '../utils/index.js';
+import { APP_CONFIG, TRANSFORMERS_CONFIG } from '../config.js';
+import { createDelay, isWebGPUSupported } from '../utils/index.js';
 
 class NutritionService {
   constructor(onProgress = null) {
@@ -8,13 +9,7 @@ class NutritionService {
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
-    /**
-     * @review
-     * Komentar ini menyebut "React state", padahal aplikasi ini vanilla JS dengan pattern MVP.
-     * Komentar yang menyesatkan bisa membingungkan siswa, terutama yang sedang belajar
-     * membedakan antara framework (React) dan vanilla JS.
-     */
-    this.onProgress = onProgress; // Callback untuk update progress di React state
+    this.onProgress = onProgress; // Callback untuk update progress
   }
 
   async loadModel() {
@@ -49,7 +44,7 @@ class NutritionService {
         })(),
       });
 
-      await createDelay(1000);
+      await createDelay(APP_CONFIG.nutritionGenerationDelay);
 
       this.isModelLoaded = true;
       this.currentBackend = device;
@@ -100,7 +95,7 @@ class NutritionService {
     try {
       this.isGenerating = true;
 
-      await createDelay(this.config.generationDelay);
+      await createDelay(APP_CONFIG.generationDelay);
 
       const prompt = `Write a simple nutrition fact about ${fruitName}. Include key nutritional benefits in 1-2 sentences.`;
 
