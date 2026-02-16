@@ -1,7 +1,7 @@
+import { PERFORMANCE_CONFIG, TRANSFORMERS_CONFIG } from '../core/config.js';
 import {
-  PERFORMANCE_CONFIG,
-  TRANSFORMERS_CONFIG,
   createDelay,
+  createModelProgressCallback,
   createPerformanceResult,
   logError,
   logPerformance,
@@ -31,7 +31,14 @@ class NutritionService {
       this.generator = await pipeline(
         'text2text-generation',
         this.config.modelName,
-        { dtype: "q4" },
+        {
+          dtype: "q4",
+          progress_callback: createModelProgressCallback((progress) => {
+            if (this.ui && typeof this.ui.showStatus === 'function') {
+              this.ui.showStatus(progress.message);
+            }
+          }),
+        },
       );
       
       this.isModelLoaded = true;
