@@ -1,5 +1,4 @@
 export const APP_CONFIG = {
-  detectionConfidenceThreshold: 70,
   analyzingDelay: 2000,
   nutritionGenerationDelay: 2000,
   detectionRetryInterval: 100
@@ -10,7 +9,10 @@ export const TENSORFLOW_CONFIG = {
   metadataPath: './model/metadata.json',
   inputSize: [224, 224],
   normalizationFactor: 255.0,
-  confidenceThreshold: 0.7,
+  confidenceThresholds: {
+    excellent: 70,
+    good: 50
+  }
 };
 
 export const TRANSFORMERS_CONFIG = {
@@ -25,10 +27,6 @@ export const TRANSFORMERS_CONFIG = {
 export const UI_CONFIG = {
   animationDuration: 300,
   fadeAnimation: 'fadeIn 0.5s ease-out forwards',
-  confidenceThresholds: {
-    excellent: 90,
-    good: 80
-  },
   nutritionCardOpacity: {
     loading: 0.6,
     normal: 1.0
@@ -49,4 +47,3 @@ export const PERFORMANCE_CONFIG = {
   totalTime: 0,
   averageTime: 0
 };
-

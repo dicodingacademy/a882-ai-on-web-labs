@@ -1,5 +1,5 @@
+import { UI_CONFIG } from '../core/config.js';
 import {
-  UI_CONFIG,
   getConfidenceTextClass,
   getConfidenceCardClass,
   addFadeInAnimation,

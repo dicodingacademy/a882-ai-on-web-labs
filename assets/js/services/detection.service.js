@@ -1,10 +1,9 @@
+import { PERFORMANCE_CONFIG, TENSORFLOW_CONFIG } from '../core/config.js';
 import {
-  TENSORFLOW_CONFIG,
   validateModelMetadata,
   logError,
   updatePerformanceStats,
   createPerformanceResult,
-  PERFORMANCE_CONFIG,
   logPerformance,
   isWebGPUSupported,
 } from '../core/utils.js';
