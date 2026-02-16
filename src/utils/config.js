@@ -21,6 +21,21 @@ export const TRANSFORMERS_CONFIG = {
   generationDelay: 500,
 };
 
+/**
+ * @review
+ * UI_CONFIG dan CAMERA_CONFIG diekspor di sini tapi tidak di-import di mana pun.
+ *
+ * - UI_CONFIG.confidenceThresholds: tidak dipakai oleh ui.js (yang justru hardcode threshold sendiri)
+ * - UI_CONFIG.animationDuration, fadeAnimation, nutritionCardOpacity: tidak dipakai sama sekali
+ * - CAMERA_CONFIG: tidak dipakai. common.js punya getCameraConfig() yang hardcode nilai yang sama
+ *
+ * Ini dead code. Keberadaannya menyesatkan karena memberi kesan bahwa
+ * ada satu sumber konfigurasi yang terpusat, padahal kenyataannya
+ * masing-masing file mendefinisikan nilainya sendiri.
+ *
+ * Sebaiknya: hapus yang tidak dipakai, atau refactor agar common.js dan ui.js
+ * benar-benar import dan gunakan nilai dari config ini.
+ */
 export const UI_CONFIG = {
   animationDuration: 300,
   fadeAnimation: 'fadeIn 0.5s ease-out forwards',
