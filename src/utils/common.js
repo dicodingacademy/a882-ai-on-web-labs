@@ -1,3 +1,5 @@
+import { CAMERA_CONFIG, TENSORFLOW_CONFIG } from './config.js';
+
 export const logError = (context, error) => {
   console.error(`❌ ${context}:`, error);
 };
@@ -55,8 +57,6 @@ export const isValidDetection = (result) => {
   return result && result.isValid && result.confidence >= excellent;
 };
 
-import { CAMERA_CONFIG, TENSORFLOW_CONFIG } from './config.js';
-
 export const getCameraConfig = () => {
   const mobile = isMobileDevice();
   return {
@@ -80,6 +80,48 @@ export const getCameraConstraints = (selectedCameraId) => {
       height: { ideal: config.resolution.height },
       facingMode: config.facingMode,
       frameRate: { ideal: config.defaultFPS }
+    }
+  };
+};
+
+export const createModelProgressCallback = (onProgress, throttleMs = 200) => {
+  const fileProgress = {};
+  let lastMessage = '';
+  let lastCallTime = 0;
+
+  return (progress) => {
+    if (progress.status !== 'progress' || !progress.file) return;
+
+    const isEncoder = progress.file.includes('encoder');
+    const isDecoder = progress.file.includes('decoder');
+    if (!isEncoder && !isDecoder) return;
+
+    fileProgress[progress.file] = Math.round(progress.progress);
+
+    const encoderFiles = Object.entries(fileProgress)
+      .filter(([file]) => file.includes('encoder'));
+    const decoderFiles = Object.entries(fileProgress)
+      .filter(([file]) => file.includes('decoder'));
+
+    const average = (entries) => {
+      if (entries.length === 0) return 0;
+      const sum = entries.reduce((acc, [, val]) => acc + val, 0);
+      return Math.round(sum / entries.length);
+    };
+
+    const encoder = average(encoderFiles);
+    const decoder = average(decoderFiles);
+    const message = `Mengunduh model AI... Encoder: ${encoder}% | Decoder: ${decoder}%`;
+
+    if (message === lastMessage) return;
+
+    const now = Date.now();
+    if (now - lastCallTime < throttleMs) return;
+    lastCallTime = now;
+    lastMessage = message;
+
+    if (onProgress && typeof onProgress === 'function') {
+      onProgress({ status: 'downloading', encoder, decoder, message });
     }
   };
 };

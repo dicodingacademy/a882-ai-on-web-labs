@@ -2,7 +2,8 @@ export const APP_CONFIG = {
   detectionConfidenceThreshold: 70,
   analyzingDelay: 2000,
   nutritionGenerationDelay: 2000,
-  detectionRetryInterval: 100
+  detectionRetryInterval: 100,
+  cameraStartDelay: 500
 };
 
 export const TENSORFLOW_CONFIG = {

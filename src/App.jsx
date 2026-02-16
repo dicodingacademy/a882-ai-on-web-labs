@@ -156,7 +156,7 @@ function App() {
 
       await state.services.camera?.startCamera();
 
-      await createDelay(500);
+      await createDelay(APP_CONFIG.cameraStartDelay);
 
       const cleanup = startDetection();
       detectionCleanupRef.current = cleanup;
@@ -200,7 +200,7 @@ function App() {
       console.error('❌ Camera toggle error:', error);
       actions.setError(error.message);
     }
-  }, [state.services.detector, actions, startCamera]);
+  }, [state.services.detector, actions, startCamera, isRunningRef]);
 
   return (
     <div className="App">

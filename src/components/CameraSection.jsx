@@ -10,15 +10,28 @@ function CameraSection({
   error
 }) {
   const [fps, setFps] = useState(30);
-  const [cameraType, setCameraType] = useState('default');
+  const [cameraType, setCameraType] = useState('');
+  const [cameraList, setCameraList] = useState([]);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  /**
-   * @review
-   * Sebaiknya tambahkan dependency array [services.camera]
-   * agar effect hanya jalan ketika camera service berubah.
-   */
+  useEffect(() => {
+    const loadCameras = async () => {
+      if (services.camera) {
+        try {
+          const cameras = await services.camera.loadCameras();
+          setCameraList(cameras);
+          if (cameras.length > 0 && !cameraType) {
+            setCameraType(cameras[0].deviceId);
+          }
+        } catch (error) {
+          console.error('Gagal memuat daftar kamera:', error);
+        }
+      }
+    };
+    loadCameras();
+  }, [services.camera]);
+
   useEffect(() => {
     if (services.camera) {
       if (videoRef.current && !services.camera.video) {
@@ -28,7 +41,7 @@ function CameraSection({
         services.camera.setCanvasElement(canvasRef.current);
       }
     }
-  });
+  }, [services.camera]);
 
   useEffect(() => {
     if (services.camera) {
@@ -36,28 +49,10 @@ function CameraSection({
     }
   }, [fps, services.camera]);
 
-  /**
-   * @review
-   * Ada dua masalah dengan camera selector ini:
-   *
-   * 1. services.camera.startCamera() dipanggil tanpa argumen.
-   *    Padahal method startCamera(selectedCameraId) di CameraService
-   *    menerima parameter deviceId. Tanpa argumen, kamera yang sama
-   *    akan digunakan terus, jadi mengganti pilihan di dropdown tidak ada efeknya.
-   *
-   * 2. Nilai dropdown ('default', 'front', 'ext') diberkas ini adalah string hardcode
-   *    yang tidak berhubungan dengan deviceId asli dari enumerateDevices().
-   *
-   *    Di sisi lain, CameraService.loadCameras() sudah bisa mengembalikan daftar kamera
-   *    dengan deviceId yang sebenarnya, tapi tidak dimanfaatkan.
-   *
-   * Saran: silakan panggil loadCameras() saat init, populate dropdown dengan deviceId asli,
-   * lalu pass deviceId ke startCamera(selectedCameraId).
-   */
-  const handleCameraChange = (newCameraType) => {
-    setCameraType(newCameraType);
+  const handleCameraChange = (newDeviceId) => {
+    setCameraType(newDeviceId);
     if (services.camera && services.camera.isActive()) {
-      services.camera.startCamera();
+      services.camera.startCamera(newDeviceId);
     }
   };
 
@@ -69,17 +64,7 @@ function CameraSection({
   const buttonText = isRunning ? 'Stop Scan' : 'Mulai Scan';
   const buttonClass = isRunning ? 'btn btn-stop' : 'btn btn-start';
   const buttonDisabled = !isModelReady;
-  /**
-   * @review
-   * Kondisi `buttonDisabled && !isModelReady` itu redundan.
-   *
-   * `buttonDisabled` sendiri sudah didefinisikan sebagai `!isModelReady` di baris atas.
-   * Jadi `buttonDisabled && !isModelReady` sama saja dengan `!isModelReady && !isModelReady`,
-   * yang secara logis identik dengan `!isModelReady`.
-   *
-   * Cukup: `const displayButtonText = !isModelReady ? 'Memuat Model...' : buttonText;`
-   */
-  const displayButtonText = buttonDisabled && !isModelReady
+  const displayButtonText = !isModelReady
     ? 'Memuat Model...'
     : buttonText;
 
@@ -145,11 +130,17 @@ function CameraSection({
             <select
               value={cameraType}
               onChange={(e) => handleCameraChange(e.target.value)}
-              disabled={isRunning}
+              disabled={isRunning || cameraList.length === 0}
             >
-              <option value="default">Kamera Belakang (Utama)</option>
-              <option value="front">Kamera Depan</option>
-              <option value="ext">Webcam Eksternal</option>
+              {cameraList.length === 0 ? (
+                <option value="">Memuat kamera...</option>
+              ) : (
+                cameraList.map((camera) => (
+                  <option key={camera.deviceId} value={camera.deviceId}>
+                    {camera.label}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 

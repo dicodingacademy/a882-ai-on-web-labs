@@ -6,7 +6,7 @@ import {
   updatePerformanceStats,
   logPerformance,
   createPerformanceResult,
-  createPerformanceStats
+  createModelProgressCallback
 } from '../utils/common.js';
 import { pipeline, env } from '@huggingface/transformers';
 
@@ -34,59 +34,7 @@ export class NutritionService {
         {
           dtype: 'q4',
           device,
-          /**
-           * @review
-           * Di sini aku coba untuk memperbaiki glitch pada persentase encoder dan decorder saat progress_callback berjalan.
-           *
-           * Ada 3 issue sebelumnya:
-           * 1. this.onProgress masih dijalankan walau tidak ada perubahan pada file encoder/decoder. Memicu re-render yang tidak perlu.
-           * 2. Track progress per file, bukan per per-kategori. Hal ini memicu glitch kalo modelnya punya multiple file per kategori encoder/decoder.
-           * 3. Belum ada semacam throttle untuk meminimalkan jumlah call this.onProgress.
-           *
-           * Kodenya jadi lebih kompleks, gimana kalo dibuat fungsi terpisah saja?
-           */
-          progress_callback: (() => {
-            const fileProgress = {};
-            let lastMessage = '';
-            let lastCallTime = 0;
-            const THROTTLE_MS = 200;
-
-            return (progress) => {
-              if (progress.status !== 'progress' || !progress.file) return;
-
-              const isEncoder = progress.file.includes('encoder');
-              const isDecoder = progress.file.includes('decoder');
-              if (!isEncoder && !isDecoder) return;
-
-              fileProgress[progress.file] = Math.round(progress.progress);
-
-              const encoderFiles = Object.entries(fileProgress)
-                .filter(([file]) => file.includes('encoder'));
-              const decoderFiles = Object.entries(fileProgress)
-                .filter(([file]) => file.includes('decoder'));
-
-              const average = (entries) => {
-                if (entries.length === 0) return 0;
-                const sum = entries.reduce((acc, [, val]) => acc + val, 0);
-                return Math.round(sum / entries.length);
-              };
-
-              const encoder = average(encoderFiles);
-              const decoder = average(decoderFiles);
-              const message = `Mengunduh model AI... Encoder: ${encoder}% | Decoder: ${decoder}%`;
-
-              if (message === lastMessage) return;
-
-              const now = Date.now();
-              if (now - lastCallTime < THROTTLE_MS) return;
-              lastCallTime = now;
-              lastMessage = message;
-
-              if (this.onProgress && typeof this.onProgress === 'function') {
-                this.onProgress({ status: 'downloading', encoder, decoder, message });
-              }
-            };
-          })(),
+          progress_callback: createModelProgressCallback(this.onProgress),
         }
       );
 
