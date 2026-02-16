@@ -1,6 +1,6 @@
 import UIHandler from '../ui/ui.handler.js';
+import { APP_CONFIG } from './config.js';
 import {
-  APP_CONFIG,
   createDelay,
   logError
 } from './utils.js';
