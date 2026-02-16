@@ -76,35 +76,15 @@ function App() {
     let isActive = true;
 
     const detectLoop = async () => {
-      /**
-       * @review
-       * Ada dead code di sini.
-       *
-       * Kondisi luar: `!isActive || !isRunningRef.current`
-       *   → artinya minimal salah satu bernilai false.
-       *
-       * Kondisi dalam: `isActive && isRunningRef.current`
-       *   → artinya KEDUANYA harus true.
-       *
-       * Jika sudah masuk blok luar (minimal satu false),
-       * maka kondisi dalam (keduanya true) TIDAK MUNGKIN tercapai.
-       * Blok setTimeout di dalamnya tidak akan pernah dieksekusi.
-       *
-       * Kemungkinan yang dimaksud adalah:
-       *   if (!isActive) return;           // benar-benar berhenti
-       *   if (!isRunningRef.current) {     // belum siap, tapi retry
-       *     setTimeout(() => { ... }, retryInterval);
-       *     return;
-       *   }
-       */
-      if (!isActive || !isRunningRef.current) {
-        if (isActive && isRunningRef.current) {
-          setTimeout(() => {
-            if (isActive) {
-              animationId = requestAnimationFrame(detectLoop);
-            }
-          }, APP_CONFIG.detectionRetryInterval);
-        }
+      if (!isActive) {
+        return;
+      }
+      if (!isRunningRef.current) {
+        setTimeout(() => {
+          if (isActive) {
+            animationId = requestAnimationFrame(detectLoop);
+          }
+        }, APP_CONFIG.detectionRetryInterval);
         return;
       }
 
@@ -175,33 +155,6 @@ function App() {
       actions.setAppState('analyzing');
 
       await state.services.camera?.startCamera();
-
-      /**
-       * @review
-       * Menggunakan document.querySelector('video') dan document.querySelector('canvas')
-       * untuk mendapatkan elemen DOM adalah anti-pattern di React.
-       *
-       * React menyediakan useRef untuk mengakses DOM secara deklaratif.
-       * Di CameraSection.jsx sendiri sudah ada videoRef dan canvasRef.
-       *
-       * Masalah dengan querySelector:
-       * 1. Jika ada lebih dari satu <video> atau <canvas> di halaman, akan ambil yang salah.
-       * 2. Bergantung pada timing render DOM, bukan lifecycle React.
-       * 3. Bypass React's declarative model.
-       *
-       * Sebaiknya, angkat ref ke App.jsx atau gunakan callback ref
-       * yang diteruskan dari parent ke child, lalu pass ke CameraService.
-       */
-      if (state.services.camera) {
-        const videoEl = document.querySelector('video');
-        const canvasEl = document.querySelector('canvas');
-        if (videoEl && !state.services.camera.video) {
-          state.services.camera.setVideoElement(videoEl);
-        }
-        if (canvasEl && !state.services.camera.canvas) {
-          state.services.camera.setCanvasElement(canvasEl);
-        }
-      }
 
       await createDelay(500);
 
