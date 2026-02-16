@@ -1,10 +1,9 @@
+import { PERFORMANCE_CONFIG, TENSORFLOW_CONFIG } from '../core/config.js';
 import {
-  TENSORFLOW_CONFIG,
   validateModelMetadata,
   logError,
   updatePerformanceStats,
   createPerformanceResult,
-  PERFORMANCE_CONFIG,
   logPerformance,
   isWebGPUSupported,
 } from '../core/utils.js';
@@ -91,7 +90,7 @@ class DetectionService {
       const maxIndex = values.indexOf(Math.max(...values));
       const confidence = Math.round(values[maxIndex] * 100);
       const className = this.labels[maxIndex];
-      const isValid = confidence >= (this.config.confidenceThreshold * 100);
+      const isValid = confidence >= this.config.confidenceThresholds.excellent;
       const backendName = tf.getBackend();
 
       const result = {

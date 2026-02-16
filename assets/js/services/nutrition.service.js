@@ -1,8 +1,8 @@
+import { PERFORMANCE_CONFIG, TRANSFORMERS_CONFIG } from '../core/config.js';
 import {
-  PERFORMANCE_CONFIG,
-  TRANSFORMERS_CONFIG,
   createDelay,
   createPerformanceResult,
+  createModelProgressCallback,
   isWebGPUSupported,
   logError,
   logPerformance,
@@ -39,23 +39,11 @@ class NutritionService {
         {
           dtype: "q4",
           device,
-          progress_callback: (() => {
-            const state = { encoder: 0, decoder: 0 };
-            return (progress) => {
-              if (progress.status === 'progress' && progress.file) {
-                state.encoder = progress.file.includes('encoder') 
-                  ? Math.round(progress.progress || 0) 
-                  : state.encoder;
-                state.decoder = progress.file.includes('decoder') 
-                  ? Math.round(progress.progress || 0) 
-                  : state.decoder;
-                // Tampilkan progress via UI
-                if (this.ui && typeof this.ui.showStatus === 'function') {
-                  this.ui.showStatus(`Mengunduh model AI...\nEncoder: ${state.encoder}% | Decoder: ${state.decoder}%`);
-                }
-              }
-            };
-          })(),
+          progress_callback: createModelProgressCallback((progress) => {
+            if (this.ui && typeof this.ui.showStatus === 'function') {
+              this.ui.showStatus(progress.message);
+            }
+          }),
         },
       );
       
