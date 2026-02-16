@@ -1,6 +1,6 @@
 import { pipeline } from '@huggingface/transformers';
 import { APP_CONFIG, TRANSFORMERS_CONFIG } from '../config.js';
-import { createDelay, isWebGPUSupported, logError } from '../utils/index.js';
+import { createDelay, createModelProgressCallback, isWebGPUSupported, logError } from '../utils/index.js';
 
 class NutritionService {
   constructor(onProgress = null) {
@@ -19,29 +19,7 @@ class NutritionService {
       this.generator = await pipeline('text2text-generation', this.config.modelName, {
         dtype: "q4",
         device,
-        progress_callback: (() => {
-          const state = { encoder: 0, decoder: 0 };
-          return (progress) => {
-            if (progress.status === 'progress' && progress.file) {
-              state.encoder = progress.file.includes('encoder') 
-                ? Math.round(progress.progress || 0) 
-                : state.encoder;
-              state.decoder = progress.file.includes('decoder') 
-                ? Math.round(progress.progress || 0) 
-                : state.decoder;
-              
-              // Panggil callback jika ada
-              if (this.onProgress && typeof this.onProgress === 'function') {
-                this.onProgress({
-                  status: 'downloading',
-                  encoder: state.encoder,
-                  decoder: state.decoder,
-                  message: `Mengunduh model AI... Encoder: ${state.encoder}% | Decoder: ${state.decoder}%`
-                });
-              }
-            }
-          };
-        })(),
+        progress_callback: createModelProgressCallback(this.onProgress),
       });
 
       await createDelay(APP_CONFIG.nutritionGenerationDelay);
