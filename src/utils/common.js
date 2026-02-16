@@ -50,29 +50,19 @@ export const getCameraErrorMessage = (error) => {
   return errorMessages[error.name] || 'Gagal memulai kamera';
 };
 
-/**
- * @review
- * Semua nilai di sini di-hardcode, padahal di config.js
- * sudah ada CAMERA_CONFIG yang mendefinisikan hal yang sama:
- *   defaultFPS: 30, fpsRange: { min: 15, max: 60 },
- *   desktopResolution/mobileResolution, desktopFacingMode/mobileFacingMode.
- *
- * Dua sumber kebenaran untuk konfigurasi yang sama.
- * Jika siswa ingin mengubah resolusi kamera, mereka mungkin mengubah
- * di CAMERA_CONFIG (yang terlihat seperti "pusat konfigurasi")
- * tanpa sadar bahwa getCameraConfig() hardcode nilainya sendiri.
- *
- * Sebaiknya import CAMERA_CONFIG dan gunakan nilainya di sini.
- */
+import { CAMERA_CONFIG } from './config.js';
+
 export const getCameraConfig = () => {
   const mobile = isMobileDevice();
   return {
-    defaultFPS: 30,
-    fpsRange: { min: 15, max: 60 },
+    defaultFPS: CAMERA_CONFIG.defaultFPS,
+    fpsRange: CAMERA_CONFIG.fpsRange,
     resolution: mobile
-      ? { width: 480, height: 640 }
-      : { width: 640, height: 480 },
-    facingMode: mobile ? 'environment' : 'user'
+      ? CAMERA_CONFIG.mobileResolution
+      : CAMERA_CONFIG.desktopResolution,
+    facingMode: mobile
+      ? CAMERA_CONFIG.mobileFacingMode
+      : CAMERA_CONFIG.desktopFacingMode
   };
 };
 
