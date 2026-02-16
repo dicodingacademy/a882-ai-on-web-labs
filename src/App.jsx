@@ -16,8 +16,6 @@ function App() {
   const isRunningRef = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
-
     const init = async () => {
       try {
         actions.setModelStatus('Memuat model AI...');
@@ -39,25 +37,16 @@ function App() {
           console.warn('⚠️ Layanan nutrisi gagal dimuat (mode offline?)', error);
         }
 
-        if (isMounted) {
-          actions.setServices({ detector, camera, generator });
-          actions.setModelStatus('Model AI Siap');
-        }
+        actions.setServices({ detector, camera, generator });
+        actions.setModelStatus('Model AI Siap');
 
       } catch (error) {
-        if (isMounted) {
-          console.error('❌ Gagal menginisialisasi aplikasi', error);
-          actions.setModelStatus('Model gagal dimuat');
-          actions.setError(`Gagal menginisialisasi: ${error.message}`);
-        }
+        actions.setModelStatus('Model gagal dimuat');
+        actions.setError(`Gagal menginisialisasi: ${error.message}`);
       }
     };
 
     init();
-
-    return () => {
-      isMounted = false;
-    };
   }, [actions]);
 
   useEffect(() => {

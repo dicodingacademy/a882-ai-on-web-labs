@@ -26,6 +26,8 @@ export class DetectionService {
       await tf.setBackend(backend);
       await tf.ready();
 
+      const backendName = tf.getBackend();
+
       const [metadata, model] = await Promise.all([
         fetch(this.config.metadataPath).then(async (r) => {
           if (!r.ok) {
@@ -48,7 +50,7 @@ export class DetectionService {
         labels: this.labels,
         modelName: metadata.modelName || 'Tidak Diketahui',
         version: metadata.version || '1.0.0',
-        backend: tf.getBackend()
+        backend: backendName
       };
 
     } catch (error) {

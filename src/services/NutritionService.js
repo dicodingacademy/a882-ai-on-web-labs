@@ -6,7 +6,8 @@ import {
   updatePerformanceStats,
   logPerformance,
   createPerformanceResult,
-  createModelProgressCallback
+  createModelProgressCallback,
+  createPerformanceStats
 } from '../utils/common.js';
 import { pipeline, env } from '@huggingface/transformers';
 
