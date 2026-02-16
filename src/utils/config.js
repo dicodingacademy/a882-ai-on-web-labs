@@ -58,6 +58,19 @@ export const CAMERA_CONFIG = {
   mobileFacingMode: 'environment'
 };
 
+/**
+ * @review
+ * Fungsi validasi ditempatkan di file config.
+ * Secara konvensi, config seharusnya hanya berisi konstanta/konfigurasi,
+ * bukan logic. Fungsi ini lebih cocok di common.js atau file utils terpisah.
+ *
+ * Selain itu, ada redundansi validasi:
+ * - Di sini: result.confidence >= detectionConfidenceThreshold (70)
+ * - Di DetectionService.predict(): isValid = confidence >= confidenceThreshold * 100 (70)
+ *
+ * Dua tempat menghitung "apakah deteksi valid?" dengan threshold yang sama
+ * dari sumber yang berbeda. Jika salah satu diubah, yang lain bisa jadi inkonsisten.
+ */
 export const isValidDetection = (result) => {
   const { detectionConfidenceThreshold } = APP_CONFIG;
   return result && result.isValid && result.confidence >= detectionConfidenceThreshold;
