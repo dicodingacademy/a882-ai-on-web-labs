@@ -1,18 +1,8 @@
 import {
-  APP_CONFIG,
   UI_CONFIG,
   CAMERA_CONFIG,
   TENSORFLOW_CONFIG,
-  TRANSFORMERS_CONFIG,
 } from '../config.js';
-
-/**
- * @review
- * Mengapa di sini melakukan re-eksport nilai-nilai dari config ya?
- * Hal ini tentu buat siswa bingung nantinya.
- * Saranku, gek perlu re-eksport. Kalo mau pake, langsung import aja dari config.js.
- */
-export { APP_CONFIG, UI_CONFIG, CAMERA_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG };
 
 export const isMobileDevice = () => {
   return navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -30,44 +20,8 @@ export const getCameraConfig = () => {
 
 export const createDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/**
- * @review
- * sleep() sendiri tidak digunakan di mana pun dalam codebase (hanya createDelay yang dipakai).
- * Sebaiknya dihapus untuk menghindari kebingungan "pakai yang mana?"
- */
-export const sleep = (time = 1000) => {
-  return new Promise((resolve) => setTimeout(resolve, time));
-};
-
-/**
- * @review
- * Fungsi showFormattedDate() tidak digunakan di mana pun dalam codebase.
- * Aplikasi ini tidak menampilkan tanggal sama sekali.
- */
-export function showFormattedDate(date, locale = 'en-US', options = {}) {
-  return new Date(date).toLocaleDateString(locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    ...options,
-  });
-}
-
-/**
- * @review
- * Fungsi ini juga tidak digunakan di mana pun.
- * Di home-presenter.js, validasi deteksi dilakukan langsung
- * dengan `result.isValid` (yang sudah dihitung di DetectionService.predict()).
- *
- * Selain itu, ada inkonsistensi threshold:
- * - Di sini menggunakan APP_CONFIG.detectionConfidenceThreshold (70)
- * - Di DetectionService, isValid dihitung dari TENSORFLOW_CONFIG.confidenceThreshold (0.7 * 100 = 70)
- *
- * Dua sumber kebenaran untuk satu hal yang sama. Sebaiknya dipilih satu.
- */
 export const isValidDetection = (result) => {
-  const { detectionConfidenceThreshold } = APP_CONFIG;
-  return result && result.isValid && result.confidence >= detectionConfidenceThreshold;
+  return result && result.isValid && result.confidence >= TENSORFLOW_CONFIG.confidenceThreshold;
 };
 
 export const validateModelMetadata = (metadata) => {
