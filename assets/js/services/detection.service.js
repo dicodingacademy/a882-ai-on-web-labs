@@ -108,7 +108,6 @@ class DetectionService {
       logPerformance('Detection', backendName, predictionTime, this.performanceStats.averageTime);
 
       return result;
-
     } catch (error) {
       logError('Kesalahan prediksi', error);
       throw new Error(`Prediksi gagal: ${error.message}`);
