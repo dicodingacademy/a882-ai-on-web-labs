@@ -1,3 +1,5 @@
+import { TENSORFLOW_CONFIG } from './config.js';
+
 export const commonStyles = {
   errorContainer: {
     marginTop: '1rem',
@@ -51,14 +53,16 @@ export const commonStyles = {
 };
 
 export const getConfidenceTheme = (confidence) => {
-  if (confidence >= 80) return 'theme-green';
-  if (confidence >= 60) return 'theme-yellow';
+  const { excellent, good } = TENSORFLOW_CONFIG.confidenceThresholds;
+  if (confidence >= excellent) return 'theme-green';
+  if (confidence >= good) return 'theme-yellow';
   return 'theme-red';
 };
 
 export const getConfidenceTextClass = (confidence) => {
-  if (confidence >= 80) return 'text-green';
-  if (confidence >= 60) return 'text-yellow';
+  const { excellent, good } = TENSORFLOW_CONFIG.confidenceThresholds;
+  if (confidence >= excellent) return 'text-green';
+  if (confidence >= good) return 'text-yellow';
   return 'text-red';
 };
 

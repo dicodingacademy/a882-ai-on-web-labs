@@ -6,6 +6,7 @@ import {
   updatePerformanceStats,
   logPerformance,
   createPerformanceResult,
+  createModelProgressCallback,
   createPerformanceStats
 } from '../utils/common.js';
 import { pipeline, env } from '@huggingface/transformers';
@@ -34,29 +35,7 @@ export class NutritionService {
         {
           dtype: 'q4',
           device,
-          progress_callback: (() => {
-            const state = { encoder: 0, decoder: 0 };
-            return (progress) => {
-              if (progress.status === 'progress' && progress.file) {
-                state.encoder = progress.file.includes('encoder') 
-                  ? Math.round(progress.progress || 0) 
-                  : state.encoder;
-                state.decoder = progress.file.includes('decoder') 
-                  ? Math.round(progress.progress || 0) 
-                  : state.decoder;
-                
-                // Panggil callback jika ada
-                if (this.onProgress && typeof this.onProgress === 'function') {
-                  this.onProgress({
-                    status: 'downloading',
-                    encoder: state.encoder,
-                    decoder: state.decoder,
-                    message: `Mengunduh model AI... Encoder: ${state.encoder}% | Decoder: ${state.decoder}%`
-                  });
-                }
-              }
-            };
-          })(),
+          progress_callback: createModelProgressCallback(this.onProgress),
         }
       );
 

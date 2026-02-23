@@ -5,8 +5,8 @@ import InfoPanel from './components/InfoPanel';
 import { DetectionService } from './services/DetectionService';
 import { CameraService } from './services/CameraService';
 import { NutritionService } from './services/NutritionService';
-import { APP_CONFIG, isValidDetection } from './utils/config';
-import { createDelay } from './utils/common';
+import { APP_CONFIG } from './utils/config';
+import { createDelay, isValidDetection } from './utils/common';
 import { commonStyles } from './utils/ui';
 import { useAppState } from './hooks/useAppState';
 
@@ -16,8 +16,6 @@ function App() {
   const isRunningRef = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
-
     const init = async () => {
       try {
         actions.setModelStatus('Memuat model AI...');
@@ -39,25 +37,16 @@ function App() {
           console.warn('⚠️ Layanan nutrisi gagal dimuat (mode offline?)', error);
         }
 
-        if (isMounted) {
-          actions.setServices({ detector, camera, generator });
-          actions.setModelStatus('Model AI Siap');
-        }
+        actions.setServices({ detector, camera, generator });
+        actions.setModelStatus('Model AI Siap');
 
       } catch (error) {
-        if (isMounted) {
-          console.error('❌ Gagal menginisialisasi aplikasi', error);
-          actions.setModelStatus('Model gagal dimuat');
-          actions.setError(`Gagal menginisialisasi: ${error.message}`);
-        }
+        actions.setModelStatus('Model gagal dimuat');
+        actions.setError(`Gagal menginisialisasi: ${error.message}`);
       }
     };
 
     init();
-
-    return () => {
-      isMounted = false;
-    };
   }, [actions]);
 
   useEffect(() => {
@@ -76,14 +65,15 @@ function App() {
     let isActive = true;
 
     const detectLoop = async () => {
-      if (!isActive || !isRunningRef.current) {
-        if (isActive && isRunningRef.current) {
-          setTimeout(() => {
-            if (isActive) {
-              animationId = requestAnimationFrame(detectLoop);
-            }
-          }, APP_CONFIG.detectionRetryInterval);
-        }
+      if (!isActive) {
+        return;
+      }
+      if (!isRunningRef.current) {
+        setTimeout(() => {
+          if (isActive) {
+            animationId = requestAnimationFrame(detectLoop);
+          }
+        }, APP_CONFIG.detectionRetryInterval);
         return;
       }
 
@@ -155,18 +145,7 @@ function App() {
 
       await state.services.camera?.startCamera();
 
-      if (state.services.camera) {
-        const videoEl = document.querySelector('video');
-        const canvasEl = document.querySelector('canvas');
-        if (videoEl && !state.services.camera.video) {
-          state.services.camera.setVideoElement(videoEl);
-        }
-        if (canvasEl && !state.services.camera.canvas) {
-          state.services.camera.setCanvasElement(canvasEl);
-        }
-      }
-
-      await createDelay(500);
+      await createDelay(APP_CONFIG.cameraStartDelay);
 
       const cleanup = startDetection();
       detectionCleanupRef.current = cleanup;
@@ -210,7 +189,7 @@ function App() {
       console.error('❌ Camera toggle error:', error);
       actions.setError(error.message);
     }
-  }, [state.services.detector, actions, startCamera]);
+  }, [state.services.detector, actions, startCamera, isRunningRef]);
 
   return (
     <div className="App">

@@ -1,3 +1,5 @@
+import { CAMERA_CONFIG, TENSORFLOW_CONFIG } from './config.js';
+
 export const logError = (context, error) => {
   console.error(`❌ ${context}:`, error);
 };
@@ -50,15 +52,22 @@ export const getCameraErrorMessage = (error) => {
   return errorMessages[error.name] || 'Gagal memulai kamera';
 };
 
+export const isValidDetection = (result) => {
+  const { excellent } = TENSORFLOW_CONFIG.confidenceThresholds;
+  return result && result.isValid && result.confidence >= excellent;
+};
+
 export const getCameraConfig = () => {
   const mobile = isMobileDevice();
   return {
-    defaultFPS: 30,
-    fpsRange: { min: 15, max: 60 },
+    defaultFPS: CAMERA_CONFIG.defaultFPS,
+    fpsRange: CAMERA_CONFIG.fpsRange,
     resolution: mobile
-      ? { width: 480, height: 640 }
-      : { width: 640, height: 480 },
-    facingMode: mobile ? 'environment' : 'user'
+      ? CAMERA_CONFIG.mobileResolution
+      : CAMERA_CONFIG.desktopResolution,
+    facingMode: mobile
+      ? CAMERA_CONFIG.mobileFacingMode
+      : CAMERA_CONFIG.desktopFacingMode
   };
 };
 
@@ -71,6 +80,58 @@ export const getCameraConstraints = (selectedCameraId) => {
       height: { ideal: config.resolution.height },
       facingMode: config.facingMode,
       frameRate: { ideal: config.defaultFPS }
+    }
+  };
+};
+
+/**
+ * Membuat callback untuk melacak progress download model.
+ * Menghitung progress encoder dan decoder secara terpisah.
+ * Menggunakan throttling untuk menghindari terlalu banyak pemanggilan callback.
+ */
+export const createModelProgressCallback = (onProgress, throttleMs = 200) => {
+  const fileProgress = {};
+  let lastMessage = '';
+  let lastCallTime = 0;
+
+  return (progress) => {
+    // Abaikan jika bukan event progress atau tidak ada file
+    if (progress.status !== 'progress' || !progress.file) return;
+
+    // Filter hanya file encoder dan decoder
+    const isEncoder = progress.file.includes('encoder');
+    const isDecoder = progress.file.includes('decoder');
+    if (!isEncoder && !isDecoder) return;
+
+    // Update progress untuk file ini
+    fileProgress[progress.file] = Math.round(progress.progress);
+
+    // Hitung rata-rata progress untuk encoder dan decoder
+    const encoderFiles = Object.entries(fileProgress)
+      .filter(([file]) => file.includes('encoder'));
+    const decoderFiles = Object.entries(fileProgress)
+      .filter(([file]) => file.includes('decoder'));
+
+    const average = (entries) => {
+      if (entries.length === 0) return 0;
+      const sum = entries.reduce((acc, [, val]) => acc + val, 0);
+      return Math.round(sum / entries.length);
+    };
+
+    const encoder = average(encoderFiles);
+    const decoder = average(decoderFiles);
+    const message = `Mengunduh model AI... Encoder: ${encoder}% | Decoder: ${decoder}%`;
+
+    // Throttling: hanya panggil callback jika ada perubahan dan interval terpenuhi
+    if (message === lastMessage) return;
+
+    const now = Date.now();
+    if (now - lastCallTime < throttleMs) return;
+    lastCallTime = now;
+    lastMessage = message;
+
+    if (onProgress && typeof onProgress === 'function') {
+      onProgress({ status: 'downloading', encoder, decoder, message });
     }
   };
 };

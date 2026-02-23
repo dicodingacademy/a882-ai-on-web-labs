@@ -10,9 +10,27 @@ function CameraSection({
   error
 }) {
   const [fps, setFps] = useState(30);
-  const [cameraType, setCameraType] = useState('default');
+  const [cameraType, setCameraType] = useState('');
+  const [cameraList, setCameraList] = useState([]);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const loadCameras = async () => {
+      if (services.camera) {
+        try {
+          const cameras = await services.camera.loadCameras();
+          setCameraList(cameras);
+          if (cameras.length > 0 && !cameraType) {
+            setCameraType(cameras[0].deviceId);
+          }
+        } catch (error) {
+          console.error('Gagal memuat daftar kamera:', error);
+        }
+      }
+    };
+    loadCameras();
+  }, [services.camera]);
 
   useEffect(() => {
     if (services.camera) {
@@ -23,7 +41,7 @@ function CameraSection({
         services.camera.setCanvasElement(canvasRef.current);
       }
     }
-  });
+  }, [services.camera]);
 
   useEffect(() => {
     if (services.camera) {
@@ -31,10 +49,10 @@ function CameraSection({
     }
   }, [fps, services.camera]);
 
-  const handleCameraChange = (newCameraType) => {
-    setCameraType(newCameraType);
+  const handleCameraChange = (newDeviceId) => {
+    setCameraType(newDeviceId);
     if (services.camera && services.camera.isActive()) {
-      services.camera.startCamera();
+      services.camera.startCamera(newDeviceId);
     }
   };
 
@@ -46,8 +64,8 @@ function CameraSection({
   const buttonText = isRunning ? 'Stop Scan' : 'Mulai Scan';
   const buttonClass = isRunning ? 'btn btn-stop' : 'btn btn-start';
   const buttonDisabled = !isModelReady;
-  const displayButtonText = buttonDisabled && !isModelReady 
-    ? 'Memuat Model...' 
+  const displayButtonText = !isModelReady
+    ? 'Memuat Model...'
     : buttonText;
 
   return (
@@ -112,11 +130,17 @@ function CameraSection({
             <select
               value={cameraType}
               onChange={(e) => handleCameraChange(e.target.value)}
-              disabled={isRunning}
+              disabled={isRunning || cameraList.length === 0}
             >
-              <option value="default">Kamera Belakang (Utama)</option>
-              <option value="front">Kamera Depan</option>
-              <option value="ext">Webcam Eksternal</option>
+              {cameraList.length === 0 ? (
+                <option value="">Memuat kamera...</option>
+              ) : (
+                cameraList.map((camera) => (
+                  <option key={camera.deviceId} value={camera.deviceId}>
+                    {camera.label}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 

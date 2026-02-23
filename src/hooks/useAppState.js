@@ -25,40 +25,44 @@ const ActionTypes = {
   RESET_RESULTS: 'RESET_RESULTS',
 };
 
+/**
+ * @review
+ * Indentasi `switch` dan `case` di sini perlu diperbaiki.
+ */
 function appReducer(state, action) {
   switch (action.type) {
-  case ActionTypes.SET_MODEL_STATUS:
-    return { ...state, modelStatus: action.payload };
+    case ActionTypes.SET_MODEL_STATUS:
+      return { ...state, modelStatus: action.payload };
 
-  case ActionTypes.SET_SERVICES:
-    return { ...state, services: action.payload };
+    case ActionTypes.SET_SERVICES:
+      return { ...state, services: action.payload };
 
-  case ActionTypes.SET_RUNNING:
-    return { ...state, isRunning: action.payload };
+    case ActionTypes.SET_RUNNING:
+      return { ...state, isRunning: action.payload };
 
-  case ActionTypes.SET_APP_STATE:
-    return { ...state, appState: action.payload };
+    case ActionTypes.SET_APP_STATE:
+      return { ...state, appState: action.payload };
 
-  case ActionTypes.SET_DETECTION_RESULT:
-    return { ...state, detectionResult: action.payload };
+    case ActionTypes.SET_DETECTION_RESULT:
+      return { ...state, detectionResult: action.payload };
 
-  case ActionTypes.SET_NUTRITION_DATA:
-    return { ...state, nutritionData: action.payload };
+    case ActionTypes.SET_NUTRITION_DATA:
+      return { ...state, nutritionData: action.payload };
 
-  case ActionTypes.SET_ERROR:
-    return { ...state, error: action.payload };
+    case ActionTypes.SET_ERROR:
+      return { ...state, error: action.payload };
 
-  case ActionTypes.RESET_RESULTS:
-    return {
-      ...state,
-      appState: 'idle',
-      detectionResult: null,
-      nutritionData: null,
-      error: null,
-    };
+    case ActionTypes.RESET_RESULTS:
+      return {
+        ...state,
+        appState: 'idle',
+        detectionResult: null,
+        nutritionData: null,
+        error: null,
+      };
 
-  default:
-    return state;
+    default:
+      return state;
   }
 }
 

@@ -2,7 +2,8 @@ export const APP_CONFIG = {
   detectionConfidenceThreshold: 70,
   analyzingDelay: 2000,
   nutritionGenerationDelay: 2000,
-  detectionRetryInterval: 100
+  detectionRetryInterval: 100,
+  cameraStartDelay: 500
 };
 
 export const TENSORFLOW_CONFIG = {
@@ -10,7 +11,10 @@ export const TENSORFLOW_CONFIG = {
   metadataPath: '/model/metadata.json',
   inputSize: [224, 224],
   normalizationFactor: 255.0,
-  confidenceThreshold: 0.7,
+  confidenceThresholds: {
+    excellent: 70,
+    good: 50
+  }
 };
 
 export const TRANSFORMERS_CONFIG = {
@@ -21,19 +25,6 @@ export const TRANSFORMERS_CONFIG = {
   generationDelay: 500,
 };
 
-export const UI_CONFIG = {
-  animationDuration: 300,
-  fadeAnimation: 'fadeIn 0.5s ease-out forwards',
-  confidenceThresholds: {
-    excellent: 90,
-    good: 80
-  },
-  nutritionCardOpacity: {
-    loading: 0.6,
-    normal: 1.0
-  }
-};
-
 export const CAMERA_CONFIG = {
   defaultFPS: 30,
   fpsRange: { min: 15, max: 60 },
@@ -41,9 +32,4 @@ export const CAMERA_CONFIG = {
   mobileResolution: { width: 480, height: 640 },
   desktopFacingMode: 'user',
   mobileFacingMode: 'environment'
-};
-
-export const isValidDetection = (result) => {
-  const { detectionConfidenceThreshold } = APP_CONFIG;
-  return result && result.isValid && result.confidence >= detectionConfidenceThreshold;
 };
