@@ -1,8 +1,23 @@
 import { generateCameraSection, generateInfoPanel } from '../../templates.js';
+import { 
+  getConfidenceTextClass, 
+  getConfidenceCardClass,
+  setElementText,
+  setElementHTML,
+  setElementDisplay,
+  setElementStyle,
+  addScaleAnimation,
+  addFadeInAnimation,
+} from '../../utils/index.js';
 import HomePresenter from './home-presenter.js';
 
 export default class HomePage {
   #presenter = null;
+  #headerPresenter = null;
+
+  constructor({ headerPresenter }) {
+    this.#headerPresenter = headerPresenter;
+  }
 
   async render() {
     return `
@@ -14,7 +29,7 @@ export default class HomePage {
   }
 
   async afterRender() {
-    this.#presenter = new HomePresenter({ view: this });
+    this.#presenter = new HomePresenter({ view: this, headerPresenter: this.#headerPresenter });
     await this.#presenter.initialApp();
     this.#bindEvents();
   }
@@ -48,20 +63,16 @@ export default class HomePage {
     if (toggleBtn) {
       toggleBtn.disabled = true;
     }
-    if (btnText) {
-      btnText.textContent = 'Memuat...';
-    }
+    setElementText(btnText, 'Memuat...');
   }
 
   hideCameraLoading() {
     const toggleBtn = document.getElementById('btn-toggle');
     const btnText = document.getElementById('btn-text');
-    if (toggleBtn && !toggleBtn.disabled) {
+    if (toggleBtn && toggleBtn.disabled) {
       toggleBtn.disabled = false;
     }
-    if (btnText) {
-      btnText.textContent = 'Mulai Scan';
-    }
+    setElementText(btnText, 'Mulai Scan');
   }
 
   enableToggleButton() {
@@ -78,19 +89,16 @@ export default class HomePage {
       toggleBtn.classList.remove('btn-stop');
       toggleBtn.classList.add('btn-start');
     }
-    if (btnText) btnText.textContent = 'Mulai Scan';
-    if (viewInactive) viewInactive.style.display = 'flex';
-    if (viewActive) viewActive.style.display = 'none';
-    if (scannerOverlay) scannerOverlay.style.display = 'none';
+    setElementText(btnText, 'Mulai Scan');
+    setElementDisplay(viewInactive, 'flex');
+    setElementDisplay(viewActive, 'none');
+    setElementDisplay(scannerOverlay, 'none');
     if (statusDot) statusDot.classList.remove('active');
-    if (statusTextCamera) statusTextCamera.textContent = 'OFFLINE';
+    setElementText(statusTextCamera, 'OFFLINE');
   }
 
   showStatus(message) {
-    const statusText = document.getElementById('status-text');
-    if (statusText) {
-      statusText.textContent = message;
-    }
+    this.#headerPresenter?.updateStatus(message);
   }
 
   showCameraActive() {
@@ -106,12 +114,12 @@ export default class HomePage {
       toggleBtn.classList.remove('btn-start');
       toggleBtn.classList.add('btn-stop');
     }
-    if (btnText) btnText.textContent = 'Berhenti';
-    if (viewInactive) viewInactive.style.display = 'none';
-    if (viewActive) viewActive.style.display = 'block';
-    if (scannerOverlay) scannerOverlay.style.display = 'block';
+    setElementText(btnText, 'Berhenti');
+    setElementDisplay(viewInactive, 'none');
+    setElementDisplay(viewActive, 'block');
+    setElementDisplay(scannerOverlay, 'block');
     if (statusDot) statusDot.classList.add('active');
-    if (statusTextCamera) statusTextCamera.textContent = 'SIARAN LANGSUNG';
+    setElementText(statusTextCamera, 'SIARAN LANGSUNG');
   }
 
   showCameraInactive() {
@@ -127,12 +135,12 @@ export default class HomePage {
       toggleBtn.classList.remove('btn-stop');
       toggleBtn.classList.add('btn-start');
     }
-    if (btnText) btnText.textContent = 'Mulai Scan';
-    if (viewInactive) viewInactive.style.display = 'flex';
-    if (viewActive) viewActive.style.display = 'none';
-    if (scannerOverlay) scannerOverlay.style.display = 'none';
+    setElementText(btnText, 'Mulai Scan');
+    setElementDisplay(viewInactive, 'flex');
+    setElementDisplay(viewActive, 'none');
+    setElementDisplay(scannerOverlay, 'none');
     if (statusDot) statusDot.classList.remove('active');
-    if (statusTextCamera) statusTextCamera.textContent = 'OFFLINE';
+    setElementText(statusTextCamera, 'OFFLINE');
   }
 
   showIdleState() {
@@ -140,9 +148,9 @@ export default class HomePage {
     const stateAnalyzing = document.getElementById('state-analyzing');
     const stateResult = document.getElementById('state-result');
 
-    if (stateIdle) stateIdle.style.display = 'flex';
-    if (stateAnalyzing) stateAnalyzing.style.display = 'none';
-    if (stateResult) stateResult.style.display = 'none';
+    setElementDisplay(stateIdle, 'flex');
+    setElementDisplay(stateAnalyzing, 'none');
+    setElementDisplay(stateResult, 'none');
   }
 
   showAnalyzingState() {
@@ -150,9 +158,9 @@ export default class HomePage {
     const stateAnalyzing = document.getElementById('state-analyzing');
     const stateResult = document.getElementById('state-result');
 
-    if (stateIdle) stateIdle.style.display = 'none';
-    if (stateAnalyzing) stateAnalyzing.style.display = 'flex';
-    if (stateResult) stateResult.style.display = 'none';
+    setElementDisplay(stateIdle, 'none');
+    setElementDisplay(stateAnalyzing, 'flex');
+    setElementDisplay(stateResult, 'none');
   }
 
   showResultState(className, confidence) {
@@ -164,33 +172,24 @@ export default class HomePage {
     const resBar = document.getElementById('res-bar');
     const resultCard = document.getElementById('result-card');
 
-    if (stateIdle) stateIdle.style.display = 'none';
-    if (stateAnalyzing) stateAnalyzing.style.display = 'none';
+    setElementDisplay(stateIdle, 'none');
+    setElementDisplay(stateAnalyzing, 'none');
     if (stateResult) {
-      stateResult.style.display = 'flex';
-      stateResult.classList.add('fadeIn');
+      setElementDisplay(stateResult, 'flex');
+      addFadeInAnimation(stateResult);
     }
 
-    if (resName) resName.textContent = className;
-    if (resConfidence) resConfidence.textContent = `${confidence}%`;
-    if (resBar) resBar.style.width = `${confidence}%`;
+    setElementText(resName, className);
+    setElementText(resConfidence, `${confidence}%`);
+    setElementStyle(resBar, 'width', `${confidence}%`);
 
     if (resultCard) {
       resultCard.classList.remove('theme-green', 'theme-yellow', 'theme-red');
+      resultCard.classList.add(getConfidenceCardClass(confidence));
     }
     if (resConfidence) {
       resConfidence.classList.remove('text-green', 'text-yellow', 'text-red');
-    }
-
-    if (confidence >= 90) {
-      if (resultCard) resultCard.classList.add('theme-green');
-      if (resConfidence) resConfidence.classList.add('text-green');
-    } else if (confidence >= 80) {
-      if (resultCard) resultCard.classList.add('theme-yellow');
-      if (resConfidence) resConfidence.classList.add('text-yellow');
-    } else {
-      if (resultCard) resultCard.classList.add('theme-red');
-      if (resConfidence) resConfidence.classList.add('text-red');
+      resConfidence.classList.add(getConfidenceTextClass(confidence));
     }
   }
 
@@ -202,32 +201,23 @@ export default class HomePage {
     const nutriFact = document.getElementById('nutri-fact');
     const nutriHeaderTitle = document.getElementById('nutri-header-title');
 
-    if (resName) resName.textContent = className;
-    if (resConfidence) resConfidence.textContent = `${confidence}%`;
-    if (resBar) resBar.style.width = `${confidence}%`;
+    setElementText(resName, className);
+    setElementText(resConfidence, `${confidence}%`);
+    setElementStyle(resBar, 'width', `${confidence}%`);
 
     if (resultCard) {
       resultCard.classList.remove('theme-green', 'theme-yellow', 'theme-red');
+      resultCard.classList.add(getConfidenceCardClass(confidence));
     }
     if (resConfidence) {
       resConfidence.classList.remove('text-green', 'text-yellow', 'text-red');
-    }
-
-    if (confidence >= 90) {
-      if (resultCard) resultCard.classList.add('theme-green');
-      if (resConfidence) resConfidence.classList.add('text-green');
-    } else if (confidence >= 80) {
-      if (resultCard) resultCard.classList.add('theme-yellow');
-      if (resConfidence) resConfidence.classList.add('text-yellow');
-    } else {
-      if (resultCard) resultCard.classList.add('theme-red');
-      if (resConfidence) resConfidence.classList.add('text-red');
+      resConfidence.classList.add(getConfidenceTextClass(confidence));
     }
 
     this.showResultState(className, confidence);
 
-    if (nutriFact) nutriFact.textContent = 'Menghasilkan informasi nutrisi...';
-    if (nutriHeaderTitle) nutriHeaderTitle.innerHTML = '🤖 Menghasilkan Fakta Nutrisi...';
+    setElementText(nutriFact, 'Menghasilkan informasi nutrisi...');
+    setElementHTML(nutriHeaderTitle, '🤖 Menghasilkan Fakta Nutrisi...');
   }
 
   showNutritionLoading() {
@@ -235,11 +225,11 @@ export default class HomePage {
     const nutriHeaderTitle = document.getElementById('nutri-header-title');
     const generateBtn = document.getElementById('generate-nutri-btn');
 
-    if (nutriHeaderTitle) nutriHeaderTitle.innerHTML = '🤖 Menghasilkan...';
-    if (nutriFact) nutriFact.textContent = 'Sedang menghasilkan informasi nutrisi...';
+    setElementHTML(nutriHeaderTitle, '🤖 Menghasilkan...');
+    setElementText(nutriFact, 'Sedang menghasilkan informasi nutrisi...');
     if (generateBtn) {
       generateBtn.disabled = true;
-      generateBtn.textContent = 'Memproses...';
+      setElementText(generateBtn, 'Memproses...');
     }
   }
 
@@ -247,16 +237,8 @@ export default class HomePage {
     const nutriFact = document.getElementById('nutri-fact');
     const nutriHeaderTitle = document.getElementById('nutri-header-title');
 
-    if (nutriHeaderTitle) nutriHeaderTitle.textContent = 'Fakta Nutrisi';
-    if (nutriFact) {
-      nutriFact.style.transform = 'scale(1.02)';
-      setTimeout(() => {
-        if (nutriFact) {
-          nutriFact.style.transform = 'scale(1)';
-          nutriFact.textContent = fact;
-        }
-      }, 300);
-    }
+    setElementText(nutriHeaderTitle, 'Fakta Nutrisi');
+    addScaleAnimation(nutriFact, () => setElementText(nutriFact, fact));
   }
 
   showNutritionError() {
@@ -264,11 +246,11 @@ export default class HomePage {
     const nutriHeaderTitle = document.getElementById('nutri-header-title');
     const generateBtn = document.getElementById('generate-nutri-btn');
 
-    if (nutriHeaderTitle) nutriHeaderTitle.textContent = 'Fakta Nutrisi (Gagal)';
-    if (nutriFact) nutriFact.textContent = 'Tidak dapat menghasilkan informasi nutrisi saat ini.';
+    setElementText(nutriHeaderTitle, 'Fakta Nutrisi (Gagal)');
+    setElementText(nutriFact, 'Tidak dapat menghasilkan informasi nutrisi saat ini.');
     if (generateBtn) {
       generateBtn.disabled = false;
-      generateBtn.textContent = '🔄 Coba Lagi';
+      setElementText(generateBtn, '🔄 Coba Lagi');
     }
   }
 

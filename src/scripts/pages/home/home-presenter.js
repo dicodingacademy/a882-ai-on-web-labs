@@ -1,28 +1,38 @@
+import { APP_CONFIG } from '../../config.js';
 import CameraService from '../../services/camera.service.js';
 import DetectionService from '../../services/detection.service.js';
 import NutritionService from '../../services/nutrition.service.js';
+import { createDelay, isValidDetection } from '../../utils/index.js';
 
 export default class HomePresenter {
   #view;
+  #headerPresenter;
   #cameraService;
   #detectionService;
   #nutritionService;
   #timer = null;
   #currentLoopId = null;
 
-  constructor({ view }) {
+  constructor({ view, headerPresenter }) {
     this.#view = view;
+    this.#headerPresenter = headerPresenter;
     this.#cameraService = new CameraService();
     this.#detectionService = new DetectionService();
     
     // Callback untuk update progress download model
     this.#nutritionService = new NutritionService((progress) => {
-      this.#view.showStatus(progress.message);
+      this.#updateStatus(progress.message);
     });
   }
 
+  #updateStatus(message) {
+    if (this.#headerPresenter) {
+      this.#headerPresenter.updateStatus(message);
+    }
+  }
+
   async initialApp() {
-    this.#view.showStatus('Memuat model AI...');
+    this.#updateStatus('Memuat model AI...');
     this.#view.showCameraLoading();
     try {
       await this.#cameraService.loadCameras(this.#view.getCameraSelectElement());
@@ -30,12 +40,12 @@ export default class HomePresenter {
 
       await this.#nutritionService.loadModel();
 
-      this.#view.showStatus('Model AI Siap');
+      this.#updateStatus('Model AI Siap');
       this.#view.hideCameraLoading();
       this.#view.enableToggleButton();
     } catch (error) {
       console.error('initialApp: error:', error);
-      this.#view.showStatus('Model gagal dimuat');
+      this.#updateStatus('Model gagal dimuat');
       this.#view.hideCameraLoading();
       this.#view.showError(error.message);
     }
@@ -81,7 +91,7 @@ export default class HomePresenter {
     }
   }
 
-  async generateNutrition(className, confidence) {
+  async generateNutrition(className) {
     this.#view.showNutritionLoading();
     try {
       const result = await this.#nutritionService.generateNutrition(className);
@@ -124,11 +134,11 @@ export default class HomePresenter {
     try {
       const result = await this.#detectionService.predict(canvas);
 
-      if (result.isValid) {
+      if (isValidDetection(result)) {
         this.#stopDetectionLoop();
         this.#view.showAnalyzingState();
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await createDelay(APP_CONFIG.analyzingDelay);
 
         this.stopCamera();
         this.#view.showResultState(result.className, result.confidence);
@@ -148,7 +158,7 @@ export default class HomePresenter {
     this.#view.enableToggleButton();
 
     if (this.#nutritionService.isReady()) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await createDelay(APP_CONFIG.analyzingDelay);
       this.#view.showNutritionLoading();
 
       try {

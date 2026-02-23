@@ -1,8 +1,7 @@
 const APP_CONFIG = {
-  detectionConfidenceThreshold: 70,
   analyzingDelay: 2000,
-  nutritionGenerationDelay: 2000,
-  detectionRetryInterval: 100,
+  nutritionGenerationDelay: 1000,
+  generationDelay: 500,
 };
 
 const TENSORFLOW_CONFIG = {
@@ -10,7 +9,7 @@ const TENSORFLOW_CONFIG = {
   metadataPath: '../model/metadata.json',
   inputSize: [224, 224],
   normalizationFactor: 255.0,
-  confidenceThreshold: 0.7,
+  confidenceThreshold: 70,
 };
 
 const TRANSFORMERS_CONFIG = {
@@ -18,7 +17,6 @@ const TRANSFORMERS_CONFIG = {
   maxTokens: 80,
   temperature: 0.3,
   topP: 0.8,
-  generationDelay: 500,
 };
 
 const UI_CONFIG = {
@@ -27,10 +25,6 @@ const UI_CONFIG = {
   confidenceThresholds: {
     excellent: 90,
     good: 80,
-  },
-  nutritionCardOpacity: {
-    loading: 0.6,
-    normal: 1.0,
   },
 };
 
@@ -43,17 +37,4 @@ const CAMERA_CONFIG = {
   mobileFacingMode: 'environment',
 };
 
-const ENDPOINTS = {
-  NUTRITION_API: 'https://api.example.com/nutrition',
-};
-
-export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG, ENDPOINTS };
-
-export default {
-  APP_CONFIG,
-  TENSORFLOW_CONFIG,
-  TRANSFORMERS_CONFIG,
-  UI_CONFIG,
-  CAMERA_CONFIG,
-  ENDPOINTS,
-};
+export { APP_CONFIG, TENSORFLOW_CONFIG, TRANSFORMERS_CONFIG, UI_CONFIG, CAMERA_CONFIG };

@@ -1,5 +1,6 @@
 import { pipeline } from '@huggingface/transformers';
-import { TRANSFORMERS_CONFIG, createDelay, isWebGPUSupported, logError } from '../utils/index.js';
+import { APP_CONFIG, TRANSFORMERS_CONFIG } from '../config.js';
+import { createDelay, createModelProgressCallback, isWebGPUSupported, logError } from '../utils/index.js';
 
 class NutritionService {
   constructor(onProgress = null) {
@@ -8,7 +9,7 @@ class NutritionService {
     this.isGenerating = false;
     this.config = TRANSFORMERS_CONFIG;
     this.currentBackend = null;
-    this.onProgress = onProgress; // Callback untuk update progress di React state
+    this.onProgress = onProgress; // Callback untuk update progress
   }
 
   async loadModel() {
@@ -18,32 +19,10 @@ class NutritionService {
       this.generator = await pipeline('text2text-generation', this.config.modelName, {
         dtype: "q4",
         device,
-        progress_callback: (() => {
-          const state = { encoder: 0, decoder: 0 };
-          return (progress) => {
-            if (progress.status === 'progress' && progress.file) {
-              state.encoder = progress.file.includes('encoder') 
-                ? Math.round(progress.progress || 0) 
-                : state.encoder;
-              state.decoder = progress.file.includes('decoder') 
-                ? Math.round(progress.progress || 0) 
-                : state.decoder;
-              
-              // Panggil callback jika ada
-              if (this.onProgress && typeof this.onProgress === 'function') {
-                this.onProgress({
-                  status: 'downloading',
-                  encoder: state.encoder,
-                  decoder: state.decoder,
-                  message: `Mengunduh model AI... Encoder: ${state.encoder}% | Decoder: ${state.decoder}%`
-                });
-              }
-            }
-          };
-        })(),
+        progress_callback: createModelProgressCallback(this.onProgress),
       });
 
-      await createDelay(1000);
+      await createDelay(APP_CONFIG.nutritionGenerationDelay);
 
       this.isModelLoaded = true;
       this.currentBackend = device;
@@ -57,13 +36,7 @@ class NutritionService {
       logError('Kesalahan memuat model Transformers.js', error);
 
       this.isModelLoaded = false;
-
-      return {
-        success: false,
-        model: this.config.modelName,
-        backend: null,
-        error: error.message,
-      };
+      throw new Error(`Gagal memuat model: ${error.message}`);
     }
   }
 
@@ -79,7 +52,7 @@ class NutritionService {
     try {
       this.isGenerating = true;
 
-      await createDelay(this.config.generationDelay);
+      await createDelay(APP_CONFIG.generationDelay);
 
       const prompt = `Write a simple nutrition fact about ${fruitName}. Include key nutritional benefits in 1-2 sentences.`;
 
