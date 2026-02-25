@@ -20,14 +20,6 @@ if (workbox) {
     { url: '/manifest.json', revision: '1.0.0' },
 		{ url: '/assets/icons/android-chrome-192x192.png', revision: '1.0.0' },
 		{ url: '/assets/icons/apple-touch-icon.png', revision: '1.0.0' },
-    /**
-     * @review
-     * Sebelumnya, ketika mode offline, fungsionalitas AI tidak bisa digunakan.
-     * Hal ini implementasi offline jadi kurang efektif karena hal yang esensial tidak bisa digunakan saat offline.
-     *
-     *
-     * Solusinya menambahkan 3 library di bawah ini ke dalam service worker.
-     */
     { url: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js', revision: '1.0.0' },
     { url: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@4.22.0/dist/tf-backend-webgpu.min.js', revision: '1.0.0' },
     { url: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1', revision: '1.0.0' },
